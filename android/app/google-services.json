@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "901272262595",
+    "project_id": "practicetaskreactnative",
+    "storage_bucket": "practicetaskreactnative.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901272262595:android:abcaab94eb54d8b151cf76",
+        "android_client_info": {
+          "package_name": "com.deep_link_demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgBjYaqPwC7-lxcEdW8a1-x4tCs8gUNOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

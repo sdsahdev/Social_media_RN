@@ -1,0 +1,8 @@
+{
+    "js/ts.implicitProjectConfig.experimentalDecorators": true,
+    "js/ts.implicitProjectConfig.checkJs": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "always"
+    }
+}
