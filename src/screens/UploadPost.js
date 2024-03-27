@@ -1,3 +1,5 @@
+import storage from '@react-native-firebase/storage';
+import axios from 'axios';
 import React, { useRef, useState } from 'react';
 import {
   PermissionsAndroid,
@@ -9,13 +11,53 @@ import {
 } from 'react-native';
 import { Image, Text } from 'react-native-animatable';
 import * as ImagePicker from 'react-native-image-picker';
+import { useSelector } from 'react-redux';
+import Loader from '../components/Loader';
 import { Colors } from '../utils/Colors';
-import { ImagePath } from '../utils/Strings';
+import { API_URLS, BASE_URL, ImagePath } from '../utils/Strings';
 
-const UploadPost = () => {
+const UploadPost = ({navigation}) => {
+  const reference = storage().ref('black-t-shirt-sm.png');
   const ref = useRef();
   const [imageData, setImagedata] = useState(null);
   const [caption, setCaption] = useState('');
+  const auth = useSelector(state => state.auth);
+  const [loading, setloading] = useState(false);
+
+  const uploadImageToFirebase = async () => {
+    setloading(true);
+    let url = '';
+    const myHeader = new Headers();
+    myHeader.append('Content-Type', 'application/json');
+    if (imageData) {
+      const reference = storage().ref(imageData.assets[0].fileName);
+
+      const pathToFile = imageData.assets[0].uri;
+      // uploads file
+      await reference.putFile(pathToFile);
+
+      url = await storage().ref(imageData.assets[0].fileName).getDownloadURL();
+    }
+    const body = {
+      username: auth.data.data.username,
+      caption: caption,
+      userId: auth.data.data._id,
+      imageUrl: url,
+    };
+
+    axios
+      .post(BASE_URL + API_URLS.ADD_POST_URL, body, myHeader)
+      .then(res => {
+        setloading(false);
+        console.log(res, '====res====');
+        navigation.navigate('Home');
+      })
+      .catch(err => {
+        setloading(false);
+
+        console.log(err, '====error====');
+      });
+  };
 
   const requestCameraPermission = async () => {
     try {
@@ -92,6 +134,7 @@ const UploadPost = () => {
 
   return (
     <View style={styles.container}>
+      <Loader visible={loading} />
       <TouchableOpacity
         onPress={() => ref?.current?.focus()}
         activeOpacity={1}
@@ -111,7 +154,9 @@ const UploadPost = () => {
             source={{uri: imageData?.assets[0]?.uri}}
             style={styles.imagestyle}
           />
-          <TouchableOpacity onPress={() => setImagedata(null)} style={styles.removebtn}>
+          <TouchableOpacity
+            onPress={() => setImagedata(null)}
+            style={styles.removebtn}>
             <Image
               source={ImagePath.closeicon}
               style={[styles.camera, {width: 20, height: 20}]}
@@ -133,6 +178,7 @@ const UploadPost = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
+        onPress={() => uploadImageToFirebase()}
         style={[
           styles.postbtn,
           {

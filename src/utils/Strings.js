@@ -6,6 +6,11 @@ export const API_URLS = {
     REGISTER_URL: "/auth/register",
     GET_POST_URL: "/post/getallpost",
     GET_USER_URL: "/users/getUser",
+    ADD_POST_URL: "/post/addpost",
+    DELETE_POST_URL: "/post/delete",
+    UPDATE_POST_URL: "/post/update",
+    LIKE_POST_URL: "/post/like",
+    ADD_COMMENT: "/comment/add",
 }
 export const RoutesName = {
     Login : "Login",
@@ -15,6 +20,7 @@ export const RoutesName = {
     UploadPost:"UploadPost",
     Profile:"Profile",
     BottomTab:"BottomTab",
+    Comment:"Comment",
 }
 export const ImagePath = {
     homeicon: require('../Images/house.png'),
@@ -37,4 +43,7 @@ export const ImagePath = {
     cameraicon: require('../Images/camera.png'),
     gallaryicon: require('../Images/gallery.png'),
     menu: require('../Images/dots.png'),
+    chaticon: require('../Images/chat.png'),
+    editicon: require('../Images/editing.png'),
+    deleteicon: require('../Images/delete.png'),
 }

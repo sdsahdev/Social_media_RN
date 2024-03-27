@@ -9,6 +9,7 @@ export const Colors = {
   placeColor: '#9e9e9e',
   not_availe: '#0F2167',
   booking_slelect: 'rgba(99,141,239,1)',
+  modalbg: 'rgba(0,0,0,.1)',
 
   dark_theme1:"#392467",
   dark_theme2:"#5D3587",
