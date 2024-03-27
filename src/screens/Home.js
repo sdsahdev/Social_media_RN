@@ -7,31 +7,48 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import EditCapsion from '../components/EditCapsion';
 import Loader from '../components/Loader';
 import OptionModal from '../components/OptionModal';
 import TimeAgo from '../components/TimeAgo';
 import { Colors } from '../utils/Colors';
 
+import { logout } from '../redux/Slice/AuthSlice';
 import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
 
 const Home = ({navigation}) => {
-  
   const isFocused = useIsFocused();
   const data = useSelector(state => state.auth);
   const [postdata, setPostData] = useState([]);
+  const [followListdata,setfollowList] = useState([]);
   const [loading, setloading] = useState(false);
   const [openOpsion, setopenOpsion] = useState(false);
   const [openEditM, setopenEditM] = useState(false);
   const [selectedItem, setselectedItem] = useState(null);
   const auth = useSelector(state => state.auth);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (isFocused) {
       featchData();
+      followList()
     }
   }, [isFocused]);
+
+  const followList= () =>{
+    axios
+    .get(BASE_URL + API_URLS.GET_USER_URL + '/' + auth?.data?.data?._id)
+    .then(response => {
+      console.log(response.data);
+      if (response.data.status) {
+        console.log(response.data.data.following , "====list==");
+        setfollowList(response.data.data.following);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
 
   const featchData = () => {
     setloading(true);
@@ -47,10 +64,37 @@ const Home = ({navigation}) => {
         console.log(e, '==error==');
       });
   };
+  const followApi = id => {
+    setloading(true);
+    const myHeader = new Headers();
+    myHeader.append('Content-Type', 'application/json');
+    try {
+      const body = {
+        id: auth?.data?.data._id,
+      };
+      console.log(id, "==body==");
+      console.log(body, "==body==");
+      axios
+        .put(BASE_URL + API_URLS.FOLLOW_USER+"/"+id, body, myHeader)
+        .then(response => {
+          setloading(false);
+          followList();
+          console.log(response.data, '==response follow====='), setloading(false);
+        })
+        .catch(error => {
+          setloading(false);
+          console.log(error, '=====error follow==='), setloading(false);
+        });
+    } catch (e) {
+      setloading(false);
+      console.log(e, '===error ===');
+    }
+  };
 
   const renderItem = ({item, index}) => {
-    const checkLike = item.likes.find(like => like ==auth?.data?.data._id )
-    console.log(checkLike);
+    console.log(item);
+    const checkLike = item.likes.find(like => like == auth?.data?.data._id);
+    const followCheck = followListdata.find(follow => follow == item.userId);
     return (
       <View
         style={[
@@ -67,12 +111,20 @@ const Home = ({navigation}) => {
               </Text>
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              setopenOpsion(true), setselectedItem(item);
-            }}>
-            <Image source={ImagePath.menu} style={{width: 24, height: 24}} />
-          </TouchableOpacity>
+          {auth?.data?.data._id == item.userId ? (
+            <TouchableOpacity
+              onPress={() => {
+                setopenOpsion(true), setselectedItem(item);
+              }}>
+              <Image source={ImagePath.menu} style={{width: 24, height: 24}} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => followApi(item.userId)}
+              style={styles.follwobtn}>
+              <Text style={styles.followtxt}>{followCheck ? 'Unfollow' : "Follow"} </Text>
+            </TouchableOpacity>
+          )}
         </View>
         <Text style={styles.capttxt}>{item.caption}</Text>
 
@@ -81,14 +133,21 @@ const Home = ({navigation}) => {
         )}
         <View style={styles.bottomView}>
           <TouchableOpacity
-            onPress={() =>{likePost(item)}}
+            onPress={() => {
+              likePost(item);
+            }}
             style={styles.bottomLeft}>
-            <Image source={ImagePath.hearticon} style={[styles.heart, {tintColor:checkLike ?'red': "black"}]} />
-            <Text style={styles.captiontxt}>
-              {item.likes.length} Likes
-            </Text>
+            <Image
+              source={ImagePath.hearticon}
+              style={[styles.heart, {tintColor: checkLike ? 'red' : 'black'}]}
+            />
+            <Text style={styles.captiontxt}>{item.likes.length} Likes</Text>
           </TouchableOpacity>
-          <TouchableOpacity    onPress={() =>{ navigation.navigate(RoutesName.Comment)}} style={styles.bottomLeft}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(RoutesName.Comment, {id: item._id});
+            }}
+            style={styles.bottomLeft}>
             <Image source={ImagePath.chaticon} style={styles.heart} />
             <Text style={styles.captiontxt}>
               {item.comments.length ? item.comments.length : 0} comments
@@ -135,7 +194,7 @@ const Home = ({navigation}) => {
         console.log(error, '=====error delete==='), setloading(false);
       });
   };
-  const likePost = (item) => {
+  const likePost = item => {
     setloading(true);
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
@@ -154,6 +213,7 @@ const Home = ({navigation}) => {
         console.log(error, '=====error delete==='), setloading(false);
       });
   };
+
   return (
     <View style={styles.container}>
       <OptionModal
@@ -181,6 +241,14 @@ const Home = ({navigation}) => {
       />
       <Loader visible={loading} />
       <Text style={styles.titel}>Sosial</Text>
+      <TouchableOpacity
+        onPress={() => {
+          dispatch(logout());
+          navigation.navigate(RoutesName.Splash);
+        }}
+        style={{position: 'absolute', right: 10, top: 10}}>
+        <Image source={ImagePath.closeicon} style={{width: 24, height: 24}} />
+      </TouchableOpacity>
       <FlatList
         data={postdata}
         renderItem={(item, index) => renderItem(item, index)}
@@ -193,6 +261,16 @@ const Home = ({navigation}) => {
 export default Home;
 
 const styles = StyleSheet.create({
+  followtxt: {color: Colors.white},
+  follwobtn: {
+    height: hp(6),
+    backgroundColor: Colors.dark_theme3,
+    paddingLeft: 15,
+    paddingRight: 15,
+    marginTop: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+  },
   bottomLeft: {flexDirection: 'row'},
   heart: {width: 24, height: 24},
   bottomView: {

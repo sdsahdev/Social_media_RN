@@ -1,10 +1,9 @@
-import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
+import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
+  widthPercentageToDP as wp
 } from 'react-native-responsive-screen';
-import {Colors} from '../utils/Colors';
+import { Colors } from '../utils/Colors';
 
 const CustomTextInput = ({
   mt,

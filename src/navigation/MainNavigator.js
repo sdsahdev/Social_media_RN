@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import Comment from '../screens/Comment';
+import EditProfile from '../screens/EditProfile';
 import Home from '../screens/Home';
 import Login from '../screens/Login';
 import Profile from '../screens/Profile';
@@ -29,6 +30,7 @@ const MainNavigator = () => {
         <Stack.Screen name={RoutesName.Profile} component={Profile} />
         <Stack.Screen name={RoutesName.BottomTab} component={BottomTabScreen} />
         <Stack.Screen name={RoutesName.Comment} component={Comment} />
+        <Stack.Screen name={RoutesName.EditProfile} component={EditProfile} />
       </Stack.Navigator>
       <FlashMessage position="bottom" />
     </NavigationContainer>

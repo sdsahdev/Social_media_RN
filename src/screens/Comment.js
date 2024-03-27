@@ -1,46 +1,211 @@
-import React, { useState } from 'react';
+import { useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
+  FlatList,
+  Modal,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Image } from 'react-native-animatable';
+import { heightPercentageToDP } from 'react-native-responsive-screen';
+import { useSelector } from 'react-redux';
+import CommentOptionmodal from '../components/CommentOptionmodal';
+import Loader from '../components/Loader';
+import TimeAgo from '../components/TimeAgo';
 import { Colors } from '../utils/Colors';
-import { API_URLS, BASE_URL } from '../utils/Strings';
-
+import { API_URLS, BASE_URL, ImagePath } from '../utils/Strings';
 const Comment = () => {
   const auth = useSelector(state => state.auth);
-
+  const rotes = useRoute();
   const [comment, setComment] = useState('');
+  const [newcomment, setnewcomment] = useState('');
+  const [loading, setloading] = useState(false);
+  const [commentList, setcommentList] = useState([]);
+  const [commentOption, setcommentOption] = useState(false);
+  const [seleectedItem, setseleectedItem] = useState(null);
+  const [openupdatecommentmodal, setOpenupdatecommentmodal] = useState(false);
 
+  useEffect(() => {
+    fetchComent();
+  }, []);
+  const fetchComent = () => {
+    setloading(true);
+    const myHeader = new Headers();
+    myHeader.append('Content-Type', 'application/json');
+    try {
+      axios
+        .get(BASE_URL + API_URLS.GET_COMMENT + '/' + rotes.params.id, myHeader)
+        .then(response => {
+          setloading(false);
+          console.log(response.data, '==response get comment====='),
+            setloading(false);
+          setcommentList(response.data.data);
+        })
+        .catch(error => {
+          setloading(false);
+          console.log(error, '=====error  get comment==='), setloading(false);
+        });
+    } catch (e) {
+      setloading(false);
+
+      console.log(e, '===error ===');
+    }
+  };
   const postComment = () => {
     setloading(true);
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
+    try {
+      const body = {
+        comment: comment,
+        userId: auth?.data?.data._id,
+        username: auth?.data?.data.username,
+        postId: rotes.params.id,
+      };
+      axios
+        .post(BASE_URL + API_URLS.ADD_COMMENT, body, myHeader)
+        .then(response => {
+          setloading(false);
+          fetchComent();
+          setComment('');
+          console.log(response.data, '==response add====='), setloading(false);
+        })
+        .catch(error => {
+          setloading(false);
+          console.log(error, '=====error add==='), setloading(false);
+        });
+    } catch (e) {
+      setloading(false);
 
+      console.log(e, '===error ===');
+    }
+  };
+  const deleteComment = () => {
+    setloading(true);
+    const myHeader = new Headers();
+    myHeader.append('Content-Type', 'application/json');
+    try {
+      axios
+        .delete(
+          BASE_URL + API_URLS.DELETE_COMMENT + '/' + seleectedItem._id,
+          myHeader,
+        )
+        .then(response => {
+          setloading(false);
+          fetchComent();
+          setComment('');
+          console.log(response.data, '==response add====='), setloading(false);
+        })
+        .catch(error => {
+          setloading(false);
+          console.log(error, '=====error add==='), setloading(false);
+        });
+    } catch (e) {
+      setloading(false);
+
+      console.log(e, '===error ===');
+    }
+  };
+  const renderItem = ({item, index}) => {
+    console.log(item, '==comenr');
+    return (
+      <View
+        style={{
+          width: '90%',
+          height: 100,
+          backgroundColor: Colors.white,
+          alignSelf: 'center',
+          marginTop: 20,
+          borderRadius: 15,
+          padding: 10,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Image
+              source={ImagePath.usericon}
+              style={{width: 40, height: 40}}
+            />
+            <View style={{flexDirection: 'column', marginLeft: 10}}>
+              <Text style={{color: Colors.black, fontWeight: '500'}}>
+                {item.username}
+              </Text>
+              <Text>
+                <TimeAgo timestamp={item.createdAt} />
+              </Text>
+            </View>
+          </View>
+
+          {auth?.data?.data._id == item.userId ? (
+            <TouchableOpacity
+              onPress={() => {
+                setcommentOption(true);
+                setseleectedItem(item);
+              }}>
+              <Image source={ImagePath.menu} style={{width: 20, height: 20}} />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+        <Text style={{margin: 4, color: Colors.black}}>{item.comment}</Text>
+      </View>
+    );
+  };
+  const updateComment = () => {
+    setloading(true);
+    const myHeader = new Headers();
+    myHeader.append('Content-Type', 'application/json');
     const body = {
-        "comment":"super cool nice baby",
-        "userId":"65fc0bcb16c127129e5dcd94",
-        "postId":"65fc1690e6503cfc503712c9",
-        "username":"devnreuser"
+      comment: newcomment,
+      userId: auth?.data?.data._id,
+      username: auth?.data?.data.username,
+      postId: rotes.params.id,
     };
     axios
-      .put(BASE_URL + API_URLS.ADD_COMMENT + `/` + item._id, body)
+      .put(
+        BASE_URL + API_URLS.UPDATE_COMMENT + `/` + seleectedItem._id,
+        body,
+        myHeader,
+      )
       .then(response => {
         console.log(response.data, '==response delete====='),
           setloading(false),
-          featchData();
+          setOpenupdatecommentmodal(false);
+        fetchComent();
       })
       .catch(error => {
         console.log(error, '=====error delete==='), setloading(false);
       });
-  }
-
-
- 
+  };
   return (
     <View style={styles.container}>
+      <Loader visible={loading} />
+      <CommentOptionmodal
+        visible={commentOption}
+        onClick={x => {
+          setcommentOption(false);
+          if (x == 2) {
+            deleteComment();
+          }
+          if (x == 1) {
+            setnewcomment(seleectedItem.comment);
+            setOpenupdatecommentmodal(true);
+          }
+        }}
+        onClose={() => setcommentOption(false)}
+      />
+      <FlatList
+        data={commentList}
+        renderItem={(item, index) => renderItem(item, index)}
+        showsVerticalScrollIndicator={false}
+      />
       <View style={styles.bottomView}>
         <TextInput
           style={styles.input}
@@ -48,10 +213,48 @@ const Comment = () => {
           value={comment}
           onChangeText={txt => setComment(txt)}
         />
-        <TouchableOpacity disabled={comment == '' ? true : false} style={[styles.postbtn, {backgroundColor:comment ==''?Colors.placeColor : Colors.dark_theme3}]}>
+        <TouchableOpacity
+          onPress={() => postComment()}
+          disabled={comment == '' ? true : false}
+          style={[
+            styles.postbtn,
+            {
+              backgroundColor:
+                comment == '' ? Colors.placeColor : Colors.dark_theme3,
+            },
+          ]}>
           <Text style={styles.btntxt}> comment</Text>
         </TouchableOpacity>
       </View>
+      <Modal transparent visible={openupdatecommentmodal}>
+        <View style={styles.modalView}>
+          <View style={styles.mainView}>
+            <Text style={styles.editTx}>Edit Comment</Text>
+
+            <TextInput
+              value={newcomment}
+              onChangeText={txt => setnewcomment(txt)}
+              style={styles.commentinput}
+              placeholder="Type comment  here ..."
+            />
+            <View style={styles.bottomview}>
+              <TouchableOpacity
+                onPress={() => setOpenupdatecommentmodal(false)}
+                style={styles.cancelbtn}>
+                <Text style={styles.btntxt}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => updateComment()}
+                style={[
+                  styles.cancelbtn,
+                  {backgroundColor: Colors.dark_theme3},
+                ]}>
+                <Text style={styles.btntxt}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -59,6 +262,49 @@ const Comment = () => {
 export default Comment;
 
 const styles = StyleSheet.create({
+  cancelbtn: {
+    width: '40%',
+    height: 45,
+    backgroundColor: Colors.placeColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  bottomview: {
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  commentinput: {
+    width: '90%',
+    height: heightPercentageToDP(7),
+    paddingLeft: 20,
+    borderWidth: 2,
+    alignSelf: 'center',
+    marginTop: 20,
+    borderRadius: 10,
+  },
+  editTx: {
+    fontSize: 16,
+    color: Colors.black,
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  mainView: {
+    width: '90%',
+    backgroundColor: Colors.white,
+    borderRadius: 10,
+    paddingBottom: 20,
+  },
+  modalView: {
+    flex: 1,
+    backgroundColor: Colors.modalbg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
   },

@@ -13,13 +13,12 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CustomTextInput from '../components/CustomTextInput';
 import Loader from '../components/Loader';
 import { setAuthdata } from '../redux/Slice/AuthSlice';
 import { Colors } from '../utils/Colors';
 import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
-
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +26,7 @@ const Login = ({navigation}) => {
   const [badPassword, setBadPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-
+  const authData = useSelector(state => state.auth)
   const validate = () => {
     let isValided = false;
     if (email == '') {
@@ -99,6 +98,7 @@ const Login = ({navigation}) => {
   };
   return (
     <View style={styles.container}>
+      {console.log(authData, "==auth data===")}
       <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Loader visible={loading} />
