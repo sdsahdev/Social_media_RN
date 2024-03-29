@@ -22,14 +22,14 @@ import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
 
 const Signup = ({navigation}) => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [selectedGender, setselectedGender] = useState(0);
-
   const [badEmail, setBadEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [badPassword, setBadPassword] = useState('');
+  const [selectedGender, setselectedGender] = useState(0);
+  
+  const [username, setUsername] = useState('');
   const [badUsername, setBadUsername] = useState('');
+  const [mobile, setMobile] = useState('');
   const [badMobile, setBadMobile] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();

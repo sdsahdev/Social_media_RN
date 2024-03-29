@@ -2,7 +2,18 @@
     "js/ts.implicitProjectConfig.experimentalDecorators": true,
     "js/ts.implicitProjectConfig.checkJs": true,
     "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit",
-        "source.organizeImports": "always"
-    }
+        "source.fixAll": "never",
+        "source.organizeImports": "never"
+    },
+  
+    "[javascript]": {
+        "editor.foldingImportsByDefault": false
+    },
+    "json.schemas": [
+
+
+
+    ],
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false
 }

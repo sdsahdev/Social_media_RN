@@ -1,19 +1,19 @@
-import { useIsFocused } from '@react-navigation/native'; // Import the hook
+import { useIsFocused, useRoute } from '@react-navigation/native'; // Import the hook
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import {
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    FlatList,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { Image } from 'react-native-animatable';
 import {
-  heightPercentageToDP,
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
+    heightPercentageToDP,
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import { useSelector } from 'react-redux';
 import EditCapsion from '../components/EditCapsion';
@@ -22,9 +22,10 @@ import OptionModal from '../components/OptionModal';
 import TimeAgo from '../components/TimeAgo';
 import { Colors } from '../utils/Colors';
 import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
-
-const Profile = ({navigation}) => {
+const OtherProfile = ({navigation}) => {
   const auth = useSelector(state => state.auth);
+  const rotes = useRoute();
+  const otheruserid = rotes.params.id;
   const isFocused = useIsFocused();
   const [profileData, setProfilData] = useState({});
   const [postdata, setpostData] = useState([]);
@@ -32,21 +33,64 @@ const Profile = ({navigation}) => {
   const [selectedItem, setselectedItem] = useState(null);
   const [openEditM, setopenEditM] = useState(false);
   const [loading, setloading] = useState(false);
-
+  const [followListdata, setfollowList] = useState([]);
   useEffect(() => {
     if (isFocused) {
       featchData();
+      followList();
     }
   }, [isFocused]);
+  const followList = () => {
+    axios
+      .get(BASE_URL + API_URLS.GET_USER_URL + '/' + auth?.data?.data?._id)
+      .then(response => {
+        console.log(response.data);
+        if (response.data.status) {
+          console.log(response.data.data.following, '====list==');
+          setfollowList(response.data.data.following);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  const followApi = id => {
+    setloading(true);
+    const myHeader = new Headers();
+    myHeader.append('Content-Type', 'application/json');
+    try {
+      const body = {
+        id: auth?.data?.data._id,
+      };
+      console.log(id, '==body==');
+      console.log(body, '==body==');
+      axios
+        .put(BASE_URL + API_URLS.FOLLOW_USER + '/' + id, body, myHeader)
+        .then(response => {
+          setloading(false);
+          followList();
+          console.log(response.data, '==response follow====='),
+            setloading(false);
+        })
+        .catch(error => {
+          setloading(false);
+          console.log(error, '=====error follow==='), setloading(false);
+        });
+    } catch (e) {
+      setloading(false);
+      console.log(e, '===error ===');
+    }
+  };
 
   const featchData = () => {
     axios
-      .get(BASE_URL + API_URLS.GET_USER_URL + '/' + auth?.data?.data?._id)
+      .get(BASE_URL + API_URLS.GET_USER_URL + '/' + otheruserid)
       .then(response => {
         console.log(response.data, '====fetcxh data===');
         if (response.data.status) {
           setProfilData(response.data.data);
-          getProfiledata(auth?.data?.data?._id);
+          setfollowList(response.data.data.following);
+          getProfiledata();
         }
       })
       .catch(error => {
@@ -87,9 +131,9 @@ const Profile = ({navigation}) => {
         console.log(error, '=====error delete==='), setloading(false);
       });
   };
-  const getProfiledata = id => {
+  const getProfiledata = () => {
     axios
-      .get(BASE_URL + API_URLS.GET_USER_POST + '/' + auth?.data?.data?._id)
+      .get(BASE_URL + API_URLS.GET_USER_POST + '/' + otheruserid)
       .then(response => {
         if (response.data.status) {
           setpostData(response.data.data);
@@ -107,7 +151,7 @@ const Profile = ({navigation}) => {
     myHeader.append('Content-Type', 'application/json');
 
     const body = {
-      id: auth?.data?.data._id,
+      id: otheruserid,
     };
     axios
       .put(BASE_URL + API_URLS.LIKE_POST_URL + `/` + item._id, body)
@@ -123,6 +167,7 @@ const Profile = ({navigation}) => {
 
   const renderItem = ({item, index}) => {
     const checkLike = item.likes.find(like => like == auth?.data?.data._id);
+    const followCheck = followListdata.find(follow => follow == item.userId);
     return (
       <View
         style={[
@@ -146,7 +191,15 @@ const Profile = ({navigation}) => {
               }}>
               <Image source={ImagePath.menu} style={{width: 24, height: 24}} />
             </TouchableOpacity>
-          ) : null}
+          ) : (
+            <TouchableOpacity
+              onPress={() => followApi(item.userId)}
+              style={styles.follwobtn}>
+              <Text style={styles.followtxt}>
+                {followCheck ? 'Unfollow' : 'Follow'}{' '}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         <Text style={styles.capttxt}>{item.caption}</Text>
 
@@ -181,8 +234,6 @@ const Profile = ({navigation}) => {
   };
 
   return (
-   
-
     <ScrollView
       nestedScrollEnabledm
       showsVerticalScrollIndicator={false}
@@ -257,14 +308,15 @@ const Profile = ({navigation}) => {
           <Text style={styles.titel}>Posts</Text>
         </View>
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(RoutesName.EditProfile, {data: profileData});
-        }}
-        style={styles.editBtn}>
-        <Text style={styles.edittx}>Edit Profile</Text>
-      </TouchableOpacity>
-
+      {auth.data != null && auth?.data?.data._id == otheruserid ? (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(RoutesName.EditProfile, {data: profileData});
+          }}
+          style={styles.editBtn}>
+          <Text style={styles.edittx}>Edit Profile</Text>
+        </TouchableOpacity>
+      ) : null}
       <FlatList
         data={postdata}
         renderItem={(item, index) => renderItem(item, index)}
@@ -274,7 +326,7 @@ const Profile = ({navigation}) => {
   );
 };
 
-export default Profile;
+export default OtherProfile;
 
 const styles = StyleSheet.create({
   profilebtn: {

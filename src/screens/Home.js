@@ -8,6 +8,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import { useDispatch, useSelector } from 'react-redux';
+
 import EditCapsion from '../components/EditCapsion';
 import Loader from '../components/Loader';
 import OptionModal from '../components/OptionModal';
@@ -21,7 +22,7 @@ const Home = ({navigation}) => {
   const isFocused = useIsFocused();
   const data = useSelector(state => state.auth);
   const [postdata, setPostData] = useState([]);
-  const [followListdata,setfollowList] = useState([]);
+  const [followListdata, setfollowList] = useState([]);
   const [loading, setloading] = useState(false);
   const [openOpsion, setopenOpsion] = useState(false);
   const [openEditM, setopenEditM] = useState(false);
@@ -31,24 +32,24 @@ const Home = ({navigation}) => {
   useEffect(() => {
     if (isFocused) {
       featchData();
-      followList()
+      followList();
     }
   }, [isFocused]);
 
-  const followList= () =>{
+  const followList = () => {
     axios
-    .get(BASE_URL + API_URLS.GET_USER_URL + '/' + auth?.data?.data?._id)
-    .then(response => {
-      console.log(response.data);
-      if (response.data.status) {
-        console.log(response.data.data.following , "====list==");
-        setfollowList(response.data.data.following);
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }
+      .get(BASE_URL + API_URLS.GET_USER_URL + '/' + auth?.data?.data?._id)
+      .then(response => {
+        console.log(response.data);
+        if (response.data.status) {
+          console.log(response.data.data.following, '====list==');
+          setfollowList(response.data.data.following);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   const featchData = () => {
     setloading(true);
@@ -72,14 +73,15 @@ const Home = ({navigation}) => {
       const body = {
         id: auth?.data?.data._id,
       };
-      console.log(id, "==body==");
-      console.log(body, "==body==");
+      console.log(id, '==body==');
+      console.log(body, '==body==');
       axios
-        .put(BASE_URL + API_URLS.FOLLOW_USER+"/"+id, body, myHeader)
+        .put(BASE_URL + API_URLS.FOLLOW_USER + '/' + id, body, myHeader)
         .then(response => {
           setloading(false);
           followList();
-          console.log(response.data, '==response follow====='), setloading(false);
+          console.log(response.data, '==response follow====='),
+            setloading(false);
         })
         .catch(error => {
           setloading(false);
@@ -102,7 +104,11 @@ const Home = ({navigation}) => {
           {marginBottom: postdata.length - 1 == index ? 100 : 0},
         ]}>
         <View style={styles.topView}>
-          <View style={styles.topLeft}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate(RoutesName.OtherProfile, {id: item.userId})
+            }
+            style={styles.topLeft}>
             <Image source={ImagePath.usericon} style={styles.profile} />
             <View style={styles.usernameView}>
               <Text style={styles.captiontxt}>{item.username}</Text>
@@ -110,7 +116,7 @@ const Home = ({navigation}) => {
                 User post created: <TimeAgo timestamp={item.createdAt} />
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
           {auth?.data?.data._id == item.userId ? (
             <TouchableOpacity
               onPress={() => {
@@ -122,7 +128,9 @@ const Home = ({navigation}) => {
             <TouchableOpacity
               onPress={() => followApi(item.userId)}
               style={styles.follwobtn}>
-              <Text style={styles.followtxt}>{followCheck ? 'Unfollow' : "Follow"} </Text>
+              <Text style={styles.followtxt}>
+                {followCheck ? 'Unfollow' : 'Follow'}{' '}
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -162,9 +170,9 @@ const Home = ({navigation}) => {
     setloading(true);
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
-    console.log(BASE_URL + API_URLS.DELETE_POST_URL + `/` + selectedItem._id);
+    console.log(BASE_URL + API_URLS.DELETE_POST_URL + '/' + selectedItem._id);
     axios
-      .delete(BASE_URL + API_URLS.DELETE_POST_URL + `/` + selectedItem._id)
+      .delete(BASE_URL + API_URLS.DELETE_POST_URL + '/' + selectedItem._id)
       .then(response => {
         console.log(response.data, '==response delete====='),
           setloading(false),
@@ -184,7 +192,7 @@ const Home = ({navigation}) => {
       caption: caption,
     };
     axios
-      .put(BASE_URL + API_URLS.UPDATE_POST_URL + `/` + selectedItem._id, body)
+      .put(BASE_URL + API_URLS.UPDATE_POST_URL + '/' + selectedItem._id, body)
       .then(response => {
         console.log(response.data, '==response delete====='),
           setloading(false),
@@ -203,7 +211,7 @@ const Home = ({navigation}) => {
       id: auth?.data?.data._id,
     };
     axios
-      .put(BASE_URL + API_URLS.LIKE_POST_URL + `/` + item._id, body)
+      .put(BASE_URL + API_URLS.LIKE_POST_URL + '/' + item._id, body)
       .then(response => {
         console.log(response.data, '==response delete====='),
           setloading(false),
@@ -248,6 +256,13 @@ const Home = ({navigation}) => {
         }}
         style={{position: 'absolute', right: 10, top: 10}}>
         <Image source={ImagePath.closeicon} style={{width: 24, height: 24}} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(RoutesName.ChatScreen);
+        }}
+        style={{position: 'absolute', right: 50, top: 10}}>
+        <Image source={ImagePath.chaticon} style={{width: 24, height: 24}} />
       </TouchableOpacity>
       <FlatList
         data={postdata}

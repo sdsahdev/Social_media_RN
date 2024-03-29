@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "jameshrisho.redux-snippets",
+        "equimper.react-native-react-redux",
+        "discountry.react-redux-react-router-snippets",
+        "dsznajder.es7-react-js-snippets",
+        "hanopp147.es7-react-js-snippets-hanopp",
+        "esbenp.prettier-vscode"
+    ]
+}

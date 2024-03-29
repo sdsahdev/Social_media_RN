@@ -129,7 +129,7 @@ const Login = ({navigation}) => {
             />
 
             <CustomTextInput
-              icon={require('../Images/padlock.png')}
+              icon={ImagePath.lockicon}
               placeholder={'Enter Password'}
               value={password}
               onChangeText={txt => setPassword(txt)}
