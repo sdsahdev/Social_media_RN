@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -7,18 +7,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { showMessage } from 'react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import CustomTextInput from '../components/CustomTextInput';
 import Loader from '../components/Loader';
-import { setAuthdata } from '../redux/Slice/AuthSlice';
-import { Colors } from '../utils/Colors';
-import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
+import {setAuthdata, setToken} from '../redux/Slice/AuthSlice';
+import {Colors} from '../utils/Colors';
+import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +26,7 @@ const Login = ({navigation}) => {
   const [badPassword, setBadPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const authData = useSelector(state => state.auth)
+  const authData = useSelector(state => state.auth);
   const validate = () => {
     let isValided = false;
     if (email == '') {
@@ -85,20 +85,21 @@ const Login = ({navigation}) => {
           icon: responseData.status ? 'success' : 'danger', // background color
           color: '#fff', // text color
         });
+        console.log(responseData);
         if (responseData.status) {
-          dispatch(setAuthdata(responseData))
+          dispatch(setAuthdata(responseData));
+          dispatch(setToken(responseData.token));
           navigation.navigate(RoutesName.BottomTab);
         }
-         console.log(responseData);
       })
-      .catch(error => { 
+      .catch(error => {
         setLoading(false);
         console.log(error);
       });
   };
   return (
     <View style={styles.container}>
-      {console.log(authData, "==auth data===")}
+      {console.log(authData, '==auth data===')}
       <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Loader visible={loading} />
@@ -111,10 +112,7 @@ const Login = ({navigation}) => {
               alignItems: 'center',
               margin: wp(10),
             }}>
-            <Image
-              style={styles.logo}
-              source={ImagePath.logoicon}
-            />
+            <Image style={styles.logo} source={ImagePath.logoicon} />
           </View>
 
           <Text style={styles.logoText}>Welcome Back {`\n`} to Sosal</Text>

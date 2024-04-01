@@ -15,10 +15,15 @@ import Splash from '../screens/Splash';
 import UploadPost from '../screens/UploadPost';
 import {RoutesName} from '../utils/Strings';
 import BottomTabScreen from './BottomTab';
+
+import {useSelector} from 'react-redux';
+import {SocketProvide} from '../socket/socket';
 import MessageScreen from '../screens/MessageScreen';
+import GallaryScreen from '../screens/GallaryScreen';
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
+  const authData = useSelector(state => state.auth.data);
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -29,6 +34,7 @@ const MainNavigator = () => {
         <Stack.Screen name={RoutesName.Splash} component={Splash} />
         <Stack.Screen name={RoutesName.Login} component={Login} />
         <Stack.Screen name={RoutesName.Signup} component={Signup} />
+
         <Stack.Screen name={RoutesName.Home} component={Home} />
         <Stack.Screen name={RoutesName.UploadPost} component={UploadPost} />
         <Stack.Screen name={RoutesName.Profile} component={Profile} />
@@ -37,6 +43,10 @@ const MainNavigator = () => {
         <Stack.Screen name={RoutesName.EditProfile} component={EditProfile} />
         <Stack.Screen name={RoutesName.OtherProfile} component={OtherProfile} />
         <Stack.Screen name={RoutesName.ChatScreen} component={ChatScreen} />
+        <Stack.Screen
+          name={RoutesName.GallaryScreen}
+          component={GallaryScreen}
+        />
         <Stack.Screen
           name={RoutesName.MessageScreen}
           component={MessageScreen}

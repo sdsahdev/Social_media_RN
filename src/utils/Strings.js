@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://192.168.29.141:8200/socialapp/api';
+export const LOCAL_HOST = 'http://192.168.29.140:8200';
+export const BASE_URL = `${LOCAL_HOST}/socialapp/api`;
 // export const BASE_URL = "https://social-media-backend-wkdd.onrender.com/socialapp/api";
 export const API_URLS = {
   LOGIN_URL: '/auth/login',
@@ -14,12 +15,17 @@ export const API_URLS = {
   DELETE_COMMENT: '/comment/delete',
   UPDATE_COMMENT: '/comment/update',
   FOLLOW_USER: '/users/follow',
+  GET_ALL_USERS: '/users/getAllUser',
   GET_USER_POST: '/post/getuserpost',
   UPDATE_URERS: '/users/update',
+  REFRESH_TOKEN: '/refresh-token',
 
   // chat
   GET_USERS_CHATLIST: '/chat/get_my_chat',
   GET_CHAT_MESSAGE: '/chat/message',
+  GET_CHAT_DETAILS: '/chat/getchat',
+  SEND_PICS: '/chat/send-attachments',
+  CREATE_GROUP: '/chat/create-group',
 };
 export const RoutesName = {
   Login: 'Login',
@@ -34,6 +40,7 @@ export const RoutesName = {
   OtherProfile: 'OtherProfile',
   ChatScreen: 'ChatScreen',
   MessageScreen: 'MessageScreen',
+  GallaryScreen: 'GallaryScreen',
 };
 export const ImagePath = {
   homeicon: require('../Images/house.png'),
@@ -59,4 +66,6 @@ export const ImagePath = {
   chaticon: require('../Images/chat.png'),
   editicon: require('../Images/editing.png'),
   deleteicon: require('../Images/delete.png'),
+  plsuicon: require('../Images/plus.png'),
+  peopleicon: require('../Images/people.png'),
 };

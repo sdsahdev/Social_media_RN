@@ -1,25 +1,27 @@
-import { useIsFocused } from '@react-navigation/native'; // Import the hook
+import {useIsFocused} from '@react-navigation/native'; // Import the hook
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Image } from 'react-native-animatable';
+import React, {useEffect, useState} from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image} from 'react-native-animatable';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import EditCapsion from '../components/EditCapsion';
 import Loader from '../components/Loader';
 import OptionModal from '../components/OptionModal';
 import TimeAgo from '../components/TimeAgo';
-import { Colors } from '../utils/Colors';
+import {Colors} from '../utils/Colors';
 
-import { logout } from '../redux/Slice/AuthSlice';
-import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
+import {logout} from '../redux/Slice/AuthSlice';
+import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
+import {getSocket} from '../socket/socket';
 
 const Home = ({navigation}) => {
   const isFocused = useIsFocused();
+  const socket = getSocket();
   const data = useSelector(state => state.auth);
   const [postdata, setPostData] = useState([]);
   const [followListdata, setfollowList] = useState([]);
@@ -28,6 +30,8 @@ const Home = ({navigation}) => {
   const [openEditM, setopenEditM] = useState(false);
   const [selectedItem, setselectedItem] = useState(null);
   const auth = useSelector(state => state.auth);
+  const token = useSelector(state => state.auth.token);
+  console.log(socket.id, '===socketid====');
   const dispatch = useDispatch();
   useEffect(() => {
     if (isFocused) {
@@ -52,19 +56,27 @@ const Home = ({navigation}) => {
   };
 
   const featchData = () => {
-    setloading(true);
+    setloading(false);
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`, // Include token in headers
+    };
+
+    console.log(headers);
     axios
-      .get(BASE_URL + API_URLS.GET_POST_URL)
+      .get(BASE_URL + API_URLS.GET_POST_URL, {headers: headers})
       .then(res => {
         setloading(false);
-
+        console.log(res.data, '======');
         setPostData(res?.data.data.reverse());
       })
       .catch(e => {
         setloading(false);
-        console.log(e, '==error==');
+
+        console.log(e.response.data, '==error==');
       });
   };
+
   const followApi = id => {
     setloading(true);
     const myHeader = new Headers();
@@ -89,12 +101,13 @@ const Home = ({navigation}) => {
         });
     } catch (e) {
       setloading(false);
+
       console.log(e, '===error ===');
     }
   };
 
   const renderItem = ({item, index}) => {
-    console.log(item);
+    // console.log(item);
     const checkLike = item.likes.find(like => like == auth?.data?.data._id);
     const followCheck = followListdata.find(follow => follow == item.userId);
     return (
@@ -252,7 +265,7 @@ const Home = ({navigation}) => {
       <TouchableOpacity
         onPress={() => {
           dispatch(logout());
-          navigation.navigate(RoutesName.Splash);
+          navigation.navigate(RoutesName.Login);
         }}
         style={{position: 'absolute', right: 10, top: 10}}>
         <Image source={ImagePath.closeicon} style={{width: 24, height: 24}} />

@@ -21,6 +21,7 @@ const myStore = configureStore({
   reducer: presistedReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
+      immutableCheck: false,
       serializableCheck: false, // Disable serializable check
     }),
 });
