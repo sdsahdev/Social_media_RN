@@ -20,6 +20,8 @@ import {useSelector} from 'react-redux';
 import {SocketProvide} from '../socket/socket';
 import MessageScreen from '../screens/MessageScreen';
 import GallaryScreen from '../screens/GallaryScreen';
+import ListWithoutChat from '../screens/ListWithoutChat';
+import ChatDetails from '../screens/ChatDetails';
 
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
@@ -43,6 +45,11 @@ const MainNavigator = () => {
         <Stack.Screen name={RoutesName.EditProfile} component={EditProfile} />
         <Stack.Screen name={RoutesName.OtherProfile} component={OtherProfile} />
         <Stack.Screen name={RoutesName.ChatScreen} component={ChatScreen} />
+        <Stack.Screen name={RoutesName.ChatDetails} component={ChatDetails} />
+        <Stack.Screen
+          name={RoutesName.ListWithoutChat}
+          component={ListWithoutChat}
+        />
         <Stack.Screen
           name={RoutesName.GallaryScreen}
           component={GallaryScreen}

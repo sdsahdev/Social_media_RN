@@ -26,6 +26,11 @@ export const API_URLS = {
   GET_CHAT_DETAILS: '/chat/getchat',
   SEND_PICS: '/chat/send-attachments',
   CREATE_GROUP: '/chat/create-group',
+  LIST_WITHOUT_CHAT: '/chat/users-without-personal-chat',
+  CRAETE_PERSONAL_CHAT: '/chat/create-personal-chat',
+  DETELET_GROUP: '/chat/delete-group',
+  RENAME_GROUP: '/chat/rename-group',
+  LEAVE_GROUP: '/chat/leave-group',
 };
 export const RoutesName = {
   Login: 'Login',
@@ -41,6 +46,8 @@ export const RoutesName = {
   ChatScreen: 'ChatScreen',
   MessageScreen: 'MessageScreen',
   GallaryScreen: 'GallaryScreen',
+  ListWithoutChat: 'ListWithoutChat',
+  ChatDetails: 'ChatDetails',
 };
 export const ImagePath = {
   homeicon: require('../Images/house.png'),
@@ -68,4 +75,6 @@ export const ImagePath = {
   deleteicon: require('../Images/delete.png'),
   plsuicon: require('../Images/plus.png'),
   peopleicon: require('../Images/people.png'),
+  adduser: require('../Images/invite.png'),
+  leave: require('../Images/logout.png'),
 };

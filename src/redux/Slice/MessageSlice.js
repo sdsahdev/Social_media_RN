@@ -12,6 +12,7 @@ const MessageSlice = createSlice({
   },
   reducers: {
     setNewMessageAlert: (state, action) => {
+      console.log(action.payload, '======cation plalof new msg=======');
       const chatId = action.payload.chatId;
       const index = state.NewMessageAlert?.findIndex(
         item => item.chatId == chatId,

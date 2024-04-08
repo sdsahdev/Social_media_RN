@@ -37,6 +37,7 @@ import {
   removeNewMessage,
   setNewMessageAlert,
 } from '../redux/Slice/MessageSlice';
+import ChatDetails from './ChatDetails';
 
 const MessageScreen = ({navigation}) => {
   const rotes = useRoute();
@@ -127,9 +128,11 @@ const MessageScreen = ({navigation}) => {
   }, [count]);
 
   const newMessages = useCallback(data => {
-    console.log(data, '===data==');
-    setchats(prew => [data.message, ...prew].flat());
-    bottom.current.scrollToIndex({animated: false, index: 0});
+    console.log(data, '===data==', auth.data.data._id);
+    if (data.chatId == msgid) {
+      setchats(prew => [data.message, ...prew].flat());
+      bottom.current.scrollToIndex({animated: false, index: 0});
+    }
   }, []);
 
   const startTypingLister = useCallback(data => {
@@ -138,6 +141,7 @@ const MessageScreen = ({navigation}) => {
     console.log('start typing...', data);
     setuserTyping(true);
   }, []);
+
   const aletrLister = useCallback(
     content => {
       const messageForRealTime = {
@@ -284,7 +288,21 @@ const MessageScreen = ({navigation}) => {
   };
   return (
     <View style={{flex: 1}} behavior="padding">
-      {/* {console.log(chats, '==chatss==')} */}
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(RoutesName.ChatDetails, {data: chatDeatils});
+        }}
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 10,
+          borderBottomWidth: 2,
+        }}>
+        <Text style={{fontSize: 20}}>{chatDeatils?.name}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Image source={ImagePath.callicon} style={{width: 24, height: 24}} />
+      </TouchableOpacity>
       <FlatList
         ref={bottom}
         data={chats}
@@ -333,9 +351,7 @@ const MessageScreen = ({navigation}) => {
           );
         }}
       />
-
       {userTyping && <Text style={styles.typeTx}>Typeing ...</Text>}
-
       <View style={styles.bottomview}>
         <TextInput
           style={styles.input}
