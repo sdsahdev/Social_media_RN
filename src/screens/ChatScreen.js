@@ -37,6 +37,7 @@ import {
   Swipeable,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
+import {showMessage} from 'react-native-flash-message';
 
 const ChatScreen = ({navigation}) => {
   const isFocused = useIsFocused();
@@ -211,10 +212,10 @@ const ChatScreen = ({navigation}) => {
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
     try {
-      console.log(BASE_URL + API_URLS.DETELET_GROUP + '/' + id, body, myHeader);
       const body = {
         userId: auth.data.data._id,
       };
+      console.log(BASE_URL + API_URLS.DETELET_GROUP + '/' + id, body, myHeader);
       axios
         .delete(BASE_URL + API_URLS.DETELET_GROUP + '/' + id, body, myHeader)
         .then(response => {
@@ -225,8 +226,18 @@ const ChatScreen = ({navigation}) => {
           handleCloseSwipeable(index);
         })
         .catch(error => {
+          showMessage({
+            message: error?.response?.data?.error
+              ? error?.response?.data?.error
+              : 'Try again later. Something went wrong.',
+            type: 'danger',
+            backgroundColor: 'red',
+            icon: 'danger',
+            color: '#fff',
+          });
           setloading(false);
-          console.log(error, '=====error delete==='), setloading(false);
+          console.log(error.response?.data?.error, '=====error delete==='),
+            setloading(false);
         });
     } catch (e) {
       setloading(false);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Modal,
@@ -9,10 +9,10 @@ import {
   View,
 } from 'react-native';
 // import Modal from 'react-native-modal';
-import { Colors } from '../utils/Colors';
-import { ImagePath } from '../utils/Strings';
+import {Colors} from '../utils/Colors';
+import {ImagePath} from '../utils/Strings';
 
-const EditCapsion = ({onClick, onClose, visible, data,}) => {
+const EditCapsion = ({onClick, onClose, visible, data}) => {
   const [captionedit, setcaptionedit] = useState('');
   const [imageurl, setimageurl] = useState('');
   useEffect(() => {
@@ -31,7 +31,7 @@ const EditCapsion = ({onClick, onClose, visible, data,}) => {
         style={{
           width: '100%',
           height: '100%',
-          backgroundColor: Colors.dark_theme4,
+          backgroundColor: Colors.black1,
           bottom: 0,
           position: 'absolute',
           flex: 1,
@@ -48,11 +48,11 @@ const EditCapsion = ({onClick, onClose, visible, data,}) => {
           <TouchableOpacity onPress={() => onClose()}>
             <Image
               source={ImagePath.closeicon}
-              style={{width: 24, height: 24}}
+              style={{width: 24, height: 24, tintColor: Colors.white}}
             />
           </TouchableOpacity>
           <Text
-            style={{fontSize: 20, color: Colors.black, marginHorizontal: 20}}>
+            style={{fontSize: 20, color: Colors.white, marginHorizontal: 20}}>
             Edit Post
           </Text>
         </View>
@@ -65,12 +65,15 @@ const EditCapsion = ({onClick, onClose, visible, data,}) => {
             borderWidth: 1,
             height: 100,
             borderRadius: 10,
-            backdropColor: Colors.placeColor,
+            backdropColor: Colors.white,
+            borderColor: Colors.white,
           }}>
           <TextInput
             placeholder="Type caption ..."
             onChangeText={text => setcaptionedit(text)}
+            placeholderTextColor={Colors.white}
             value={captionedit}
+            style={{color: Colors.white}}
           />
         </View>
         {imageurl != '' && (
@@ -82,15 +85,24 @@ const EditCapsion = ({onClick, onClose, visible, data,}) => {
               alignSelf: 'center',
               marginTop: 20,
               opacity: 0.5,
-              borderRadius:10
+              borderRadius: 10,
             }}
           />
         )}
 
-        <TouchableOpacity onPress={()=> onClick(captionedit)} style={{width:'90%', height:50, backgroundColor:Colors.dark_theme2, justifyContent:'center', alignItems:'center',alignSelf:"center", marginTop:20, borderRadius:10}}>
-          <Text style={{color:Colors.white, fontSize:14}}>
-           Update Post
-          </Text>
+        <TouchableOpacity
+          onPress={() => onClick(captionedit)}
+          style={{
+            width: '90%',
+            height: 50,
+            backgroundColor: Colors.black4,
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            marginTop: 20,
+            borderRadius: 10,
+          }}>
+          <Text style={{color: Colors.white, fontSize: 14}}>Update Post</Text>
         </TouchableOpacity>
       </View>
     </Modal>

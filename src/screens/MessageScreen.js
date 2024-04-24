@@ -38,6 +38,7 @@ import {
   setNewMessageAlert,
 } from '../redux/Slice/MessageSlice';
 import ChatDetails from './ChatDetails';
+import FastImage from 'react-native-fast-image';
 
 const MessageScreen = ({navigation}) => {
   const rotes = useRoute();
@@ -221,6 +222,7 @@ const MessageScreen = ({navigation}) => {
   };
 
   const UserMsg = React.memo(({toggle, data, photo}) => {
+    console.log(data, '===urll===');
     const chatContainerStyle = toggle
       ? styles.chatcontanertrue
       : styles.chatcontanerflase;
@@ -245,7 +247,7 @@ const MessageScreen = ({navigation}) => {
         {data?.attachments?.length != 0 &&
           data?.attachments?.map(data => {
             return (
-              <Image
+              <FastImage
                 source={{uri: data?.url}}
                 style={{
                   width: '70%',
@@ -300,9 +302,9 @@ const MessageScreen = ({navigation}) => {
         }}>
         <Text style={{fontSize: 20}}>{chatDeatils?.name}</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <Image source={ImagePath.callicon} style={{width: 24, height: 24}} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <FlatList
         ref={bottom}
         data={chats}

@@ -1,6 +1,6 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect, useRef } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import React, {useEffect, useRef} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {
   heightPercentageToDP as hp,
@@ -9,7 +9,8 @@ import {
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 import UploadPost from '../screens/UploadPost';
-import { Colors } from '../utils/Colors';
+import {Colors} from '../utils/Colors';
+import Login from '../screens/Login';
 
 const Tab = createBottomTabNavigator();
 
@@ -51,7 +52,7 @@ const TabButton = ({item, onPress, accessibilityState}) => {
               width: wp(6),
               height: hp(4),
               marginHorizontal: wp(2),
-              tintColor: focused ? '#fff' : Colors.dark_theme4,
+              tintColor: focused ? '#fff' : Colors.white,
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'center',
@@ -77,41 +78,35 @@ const BottomTabScreen = () => {
       label: 'Home',
       type: require('../Images/house.png'), // Replace with actual image paths
       component: Home,
-      color: Colors.dark_theme1,
-      alphaClr: Colors.dark_theme2,
+      color: Colors.black,
+      // alphaClr: Colors.blue2,
     },
     {
-      route: 'UploadPost',
-      label: 'UploadPost',
+      route: 'Upload Post',
+      label: 'Upload Post',
       type: require('../Images/more.png'), // Replace with actual image paths
       component: UploadPost,
-      alphaClr: Colors.dark_theme2,
-      color: Colors.dark_theme1,
+      color: Colors.black,
+      // alphaClr: 'rgba(49,49,49,1)',
     },
     {
       route: 'Profile',
       label: 'Profile',
-      type:  require('../Images/user.png'), // Replace with actual image paths
+      type: require('../Images/user.png'), // Replace with actual image paths
       component: Profile,
-      color: Colors.dark_theme1,
+      color: Colors.black,
 
-      alphaClr: Colors.dark_theme2,
+      // alphaClr: Colors.dark_theme2,
     },
-    // {
-    //   route: 'Profile',
-    //   label: 'Profile',
-    //   type: ImagePath.user, // Replace with actual image paths
-    //   icon: 'user-circle-o',
-    //   component: ProfileScreen,
-    //   color: Colors.blue,
-    //   alphaClr: Colors.sky,
-    // },
   ];
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: 'transparent', // Set background color to transparent
+        },
       }}>
       {TabArr.map((item, index) => (
         <Tab.Screen
@@ -120,17 +115,16 @@ const BottomTabScreen = () => {
           component={item.component}
           options={{
             tabBarStyle: {
-              position: 'absolute',
-              bottom: wp(7),
-              right: wp(4),
-              left: wp(4),
-              borderRadius: wp(3),
-              alignSelf: 'center',
-              alignItems: 'center',      
-              justifyContent: 'center',
-              height: hp(7),
-              paddingBottom: hp(0.1),
               width: '90%',
+              height: hp(7),
+              bottom: wp(8),
+              left: wp(5),
+              right: wp(5),
+              alignSelf: 'center',
+              borderRadius: wp(3),
+              paddingBottom: hp(0.1),
+              backgroundColor: Colors.black5,
+              position: 'absolute',
             },
             tabBarShowLabel: false,
             tabBarButton: props => <TabButton {...props} item={item} />,

@@ -1,7 +1,7 @@
 import storage from '@react-native-firebase/storage';
-import { useRoute } from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -11,11 +11,11 @@ import {
   View,
 } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import CustomTextInput from '../components/CustomTextInput';
 import Loader from '../components/Loader';
-import { Colors } from '../utils/Colors';
-import { API_URLS, BASE_URL, ImagePath } from '../utils/Strings';
+import {Colors} from '../utils/Colors';
+import {API_URLS, BASE_URL, ImagePath} from '../utils/Strings';
 
 const EditProfile = ({navigation}) => {
   const rotes = useRoute();
@@ -34,13 +34,17 @@ const EditProfile = ({navigation}) => {
   const [loading, setloading] = useState(false);
 
   // edit
-  const [username, setUsername] = useState(data?.username =="" ?"" :data?.username);
+  const [username, setUsername] = useState(
+    data?.username == '' ? '' : data?.username,
+  );
   const [badUsername, setBadUsername] = useState('');
-  const [mobile, setMobile] = useState(data?.mobile =="" ?"" :data?.mobile);
+  const [mobile, setMobile] = useState(data?.mobile == '' ? '' : data?.mobile);
   const [badMobile, setBadMobile] = useState('');
-  const [bio, setbio] = useState(data?.bio =="" ?"" :data?.bio);
+  const [bio, setbio] = useState(data?.bio == '' ? '' : data?.bio);
   // const [badbio, setbadbio] = useState('');
-  const [address, setaddress] = useState(data?.address =="" ?"" :data?.address);
+  const [address, setaddress] = useState(
+    data?.address == '' ? '' : data?.address,
+  );
   // const [badaddress, setbadaddress] = useState('');
   const [password, setPassword] = useState('');
   const [badPassword, setBadPassword] = useState('');
@@ -71,7 +75,6 @@ const EditProfile = ({navigation}) => {
     }
   };
 
-
   const validate = () => {
     let isValided = false;
 
@@ -82,7 +85,7 @@ const EditProfile = ({navigation}) => {
     } else if (mobile.length != 10) {
       setBadMobile('Please Enter Valided Mobile Number');
       isValided = false;
-    }else{
+    } else {
       isValided = true;
       setBadMobile('');
     }
@@ -91,7 +94,7 @@ const EditProfile = ({navigation}) => {
     if (username == '') {
       isValided = false;
       setBadUsername('Please Enter Username');
-    } else{
+    } else {
       isValided = true;
       setBadUsername('');
     }
@@ -278,6 +281,7 @@ const EditProfile = ({navigation}) => {
           alignItems: 'center',
         }}>
         <CustomTextInput
+          customTxtStyle={{color: Colors.white}}
           icon={ImagePath.usericon}
           placeholder={'Enter Username'}
           value={username}
@@ -287,6 +291,7 @@ const EditProfile = ({navigation}) => {
         />
         <CustomTextInput
           icon={ImagePath.callicon}
+          customTxtStyle={{color: Colors.white}}
           placeholder={'Enter Mobile Number'}
           value={mobile}
           onChangeText={txt => setMobile(txt)}
@@ -295,6 +300,7 @@ const EditProfile = ({navigation}) => {
           keyboardType={'number-pad'}
         />
         <CustomTextInput
+          customTxtStyle={{color: Colors.white}}
           icon={ImagePath.editicon}
           placeholder={'Enter Bio'}
           value={bio}
@@ -303,6 +309,7 @@ const EditProfile = ({navigation}) => {
           // errorMessage={badbio}
         />
         <CustomTextInput
+          customTxtStyle={{color: Colors.white}}
           icon={ImagePath.homeicon}
           placeholder={'Enter Address'}
           value={address}
@@ -310,12 +317,13 @@ const EditProfile = ({navigation}) => {
           isValide={true}
           // errorMessage={badaddress}
         />
-        <TouchableOpacity onPress={() => {
-          
-          if(validate()){
-            updateotherdetails()
-          }
-        }} style={styles.updatebtn}>
+        <TouchableOpacity
+          onPress={() => {
+            if (validate()) {
+              updateotherdetails();
+            }
+          }}
+          style={styles.updatebtn}>
           <Text style={styles.btnsave}>Save Details</Text>
         </TouchableOpacity>
       </View>
@@ -326,12 +334,13 @@ const EditProfile = ({navigation}) => {
 export default EditProfile;
 
 const styles = StyleSheet.create({
+  conatner: {flex: 1, backgroundColor: Colors.black1},
   btnsave: {fontSize: 16, color: Colors.white},
   updatebtn: {
     width: '90%',
     height: 50,
     marginTop: 10,
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.black4,
     borderRadius: 10,
     marginBottom: 20,
     alignItems: 'center',
@@ -339,7 +348,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 18,
-    color: Colors.black,
+    color: Colors.white,
     fontWeight: '500',
     marginLeft: 20,
     marginTop: 20,
@@ -378,16 +387,14 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 10,
   },
-  conatner: {flex: 1},
   coverbtn: {
     width: '90%',
     height: 120,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
     marginTop: 10,
     borderRadius: 10,
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.black4,
     alignItems: 'center',
     alignSelf: 'center',
   },

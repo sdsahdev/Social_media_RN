@@ -48,6 +48,8 @@ export const RoutesName = {
   GallaryScreen: 'GallaryScreen',
   ListWithoutChat: 'ListWithoutChat',
   ChatDetails: 'ChatDetails',
+  VideoCalling: 'VideoCalling',
+  SigninOption: 'SigninOption',
 };
 export const ImagePath = {
   homeicon: require('../Images/house.png'),
@@ -77,4 +79,5 @@ export const ImagePath = {
   peopleicon: require('../Images/people.png'),
   adduser: require('../Images/invite.png'),
   leave: require('../Images/logout.png'),
+  blurBg: require('../Images/Blur.jpeg'),
 };

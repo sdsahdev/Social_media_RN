@@ -1,6 +1,6 @@
 import storage from '@react-native-firebase/storage';
 import axios from 'axios';
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   PermissionsAndroid,
   Platform,
@@ -9,12 +9,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Image, Text } from 'react-native-animatable';
+import {Image, Text} from 'react-native-animatable';
 import * as ImagePicker from 'react-native-image-picker';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import Loader from '../components/Loader';
-import { Colors } from '../utils/Colors';
-import { API_URLS, BASE_URL, ImagePath } from '../utils/Strings';
+import {Colors} from '../utils/Colors';
+import {API_URLS, BASE_URL, ImagePath} from '../utils/Strings';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
 
 const UploadPost = ({navigation}) => {
   const reference = storage().ref('black-t-shirt-sm.png');
@@ -140,6 +141,7 @@ const UploadPost = ({navigation}) => {
         activeOpacity={1}
         style={styles.captionBox}>
         <TextInput
+          placeholderTextColor={Colors.white}
           value={caption}
           onChangeText={txt => setCaption(txt)}
           style={styles.input}
@@ -178,14 +180,17 @@ const UploadPost = ({navigation}) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => uploadImageToFirebase()}
+        disabled={caption == '' && imageData == null ? true : false}
+        onPress={() =>
+          caption == '' && imageData == null ? null : uploadImageToFirebase()
+        }
         style={[
           styles.postbtn,
           {
             backgroundColor:
               caption == '' && imageData == null
-                ? '#f2f2f2'
-                : Colors.dark_theme3,
+                ? Colors.placeColor
+                : Colors.black5,
           },
         ]}>
         <Text style={styles.posttxt}>Post Now</Text>
@@ -236,7 +241,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.black1,
+    alignItems: 'center',
+    paddingTop: heightPercentageToDP(5),
   },
   captionBox: {
     width: '90%',
@@ -249,6 +256,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
+    color: Colors.white,
   },
   containBox: {
     width: '90%',
@@ -270,6 +278,6 @@ const styles = StyleSheet.create({
   pickerTitel: {
     marginLeft: 15,
     fontSize: 18,
-    color: '#000',
+    color: Colors.white,
   },
 });

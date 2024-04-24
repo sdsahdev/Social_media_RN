@@ -19,7 +19,7 @@ import Loader from '../components/Loader';
 import {setAuthdata, setToken} from '../redux/Slice/AuthSlice';
 import {Colors} from '../utils/Colors';
 import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
-const Login = ({navigation}) => {
+const Login = ({navigation, onClicks, onGoregister}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [badEmail, setBadEmail] = useState('');
@@ -27,6 +27,7 @@ const Login = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const authData = useSelector(state => state.auth);
+
   const validate = () => {
     let isValided = false;
     if (email == '') {
@@ -99,72 +100,66 @@ const Login = ({navigation}) => {
   };
   return (
     <View style={styles.container}>
-      {console.log(authData, '==auth data===')}
-      <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
-        <View style={styles.container}>
-          <Loader visible={loading} />
+      <CustomTextInput
+        customErrorTxtStyle={{color: Colors.white}}
+        customTxtStyle={{color: Colors.white}}
+        icon={require('../Images/mail.png')}
+        placeholder={'Enter Email'}
+        value={email}
+        onChangeText={txt => setEmail(txt)}
+        isValide={badEmail == '' ? true : false}
+        errorMessage={badEmail}
+      />
 
-          <View
-            style={{
-              flex: 1,
-              width: '100%',
-              height: '20%',
+      <CustomTextInput
+        customErrorTxtStyle={{color: Colors.white}}
+        customTxtStyle={{color: Colors.white}}
+        icon={ImagePath.lockicon}
+        placeholder={'Enter Password'}
+        value={password}
+        onChangeText={txt => setPassword(txt)}
+        isValide={badPassword == '' ? true : false}
+        errorMessage={badPassword}
+      />
+
+      <LinearGradient
+        colors={[Colors.blue2, Colors.blue1]}
+        style={styles.button}>
+        <TouchableOpacity
+          onPress={() => {
+            if (validate()) {
+              login();
+            }
+          }}
+          style={[
+            styles.button,
+            {
+              justifyContent: 'center',
               alignItems: 'center',
-              margin: wp(10),
-            }}>
-            <Image style={styles.logo} source={ImagePath.logoicon} />
-          </View>
+              margin: 0,
+            },
+          ]}>
+          <Text style={styles.btntxt}>Login</Text>
+        </TouchableOpacity>
+      </LinearGradient>
 
-          <Text style={styles.logoText}>Welcome Back {`\n`} to Sosal</Text>
-          <View style={{flex: 1, flexDirection: 'column'}}>
-            <CustomTextInput
-              icon={require('../Images/mail.png')}
-              placeholder={'Enter Email'}
-              value={email}
-              onChangeText={txt => setEmail(txt)}
-              isValide={badEmail == '' ? true : false}
-              errorMessage={badEmail}
-            />
-
-            <CustomTextInput
-              icon={ImagePath.lockicon}
-              placeholder={'Enter Password'}
-              value={password}
-              onChangeText={txt => setPassword(txt)}
-              isValide={badPassword == '' ? true : false}
-              errorMessage={badPassword}
-            />
-          </View>
-          <View style={{flex: 1, width: '100%'}}>
-            <LinearGradient
-              colors={[Colors.dark_theme2, Colors.dark_theme3]}
-              style={styles.button}>
-              <TouchableOpacity
-                onPress={() => {
-                  if (validate()) {
-                    login();
-                  }
-                }}
-                style={[
-                  styles.button,
-                  {justifyContent: 'center', alignItems: 'center', margin: 0},
-                ]}>
-                <Text style={styles.btntxt}>Login</Text>
-              </TouchableOpacity>
-            </LinearGradient>
-          </View>
-          <View style={{flex: 1}}>
-            <Text
-              onPress={() => navigation.navigate(RoutesName.Signup)}
-              style={{color: Colors.dark_theme2, fontSize: 14}}>
-              Create new account?{' '}
-              <Text style={{color: Colors.dark_theme1, fontWeight: 'bold'}}>
-                Sign Up
-              </Text>
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
+      <TouchableOpacity
+        onPress={() => {
+          onGoregister();
+        }}>
+        <Text style={{color: Colors.white, fontSize: 16, marginTop: 8}}>
+          Create new account?{' '}
+          <Text style={{color: Colors.white, fontWeight: 'bold'}}>Sign Up</Text>
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          onClicks();
+        }}>
+        <Text style={{color: Colors.white, fontSize: 16, marginTop: 8}}>
+          Go Back
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -174,7 +169,6 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     height: '100%',
     width: '100%',

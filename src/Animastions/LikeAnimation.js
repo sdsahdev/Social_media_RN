@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React, {useCallback} from 'react';
 import {
   Dimensions,
   Image,
   ImageBackground,
   StyleSheet,
-  View
+  View,
 } from 'react-native';
 import {
   GestureHandlerRootView,
@@ -16,7 +16,7 @@ import Animated, {
   withDelay,
   withSpring,
 } from 'react-native-reanimated';
-import { ImagePath } from '../utils/Strings';
+import {ImagePath} from '../utils/Strings';
 
 const ImageComappoennt = Animated.createAnimatedComponent(Image);
 const LikeAnimation = () => {
@@ -27,7 +27,7 @@ const LikeAnimation = () => {
       if (isFinish) {
         scale.value = withDelay(100, withSpring(0));
       }
-    })
+    });
   }, []);
 
   const animatedStle = useAnimatedStyle(() => {
@@ -39,8 +39,11 @@ const LikeAnimation = () => {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <TapGestureHandler maxDelayMs={250} numberOfTaps={2} onActivated={dobleTab} >
-          <Animated.View >
+        <TapGestureHandler
+          maxDelayMs={250}
+          numberOfTaps={2}
+          onActivated={dobleTab}>
+          <Animated.View>
             <ImageBackground
               source={ImagePath.macicon}
               style={{
@@ -51,7 +54,10 @@ const LikeAnimation = () => {
               }}>
               <ImageComappoennt
                 source={ImagePath.hearticon}
-                style={[{width: 100, height: 100, tintColor: 'red'}, animatedStle]}
+                style={[
+                  {width: 100, height: 100, tintColor: 'red'},
+                  animatedStle,
+                ]}
               />
             </ImageBackground>
           </Animated.View>

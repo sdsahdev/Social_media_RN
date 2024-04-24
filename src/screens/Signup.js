@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -7,26 +7,26 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { showMessage } from "react-native-flash-message";
+import {showMessage} from 'react-native-flash-message';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import CustomTextInput from '../components/CustomTextInput';
 import Loader from '../components/Loader';
-import { setAuthdata } from '../redux/Slice/AuthSlice';
-import { Colors } from '../utils/Colors';
-import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
+import {setAuthdata} from '../redux/Slice/AuthSlice';
+import {Colors} from '../utils/Colors';
+import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
 
-const Signup = ({navigation}) => {
+const Signup = ({navigation, onClicks}) => {
   const [email, setEmail] = useState('');
   const [badEmail, setBadEmail] = useState('');
   const [password, setPassword] = useState('');
   const [badPassword, setBadPassword] = useState('');
   const [selectedGender, setselectedGender] = useState(0);
-  
+
   const [username, setUsername] = useState('');
   const [badUsername, setBadUsername] = useState('');
   const [mobile, setMobile] = useState('');
@@ -75,7 +75,7 @@ const Signup = ({navigation}) => {
     } else if (mobile.length != 10) {
       setBadMobile('Please Enter Valided Mobile Number');
       isValided = false;
-    }else{
+    } else {
       isValided = true;
       setBadMobile('');
     }
@@ -84,13 +84,12 @@ const Signup = ({navigation}) => {
     if (username == '') {
       isValided = false;
       setBadUsername('Please Enter Username');
-    } else{
+    } else {
       isValided = true;
       setBadUsername('');
     }
 
     // gender
-
 
     return isValided;
   };
@@ -102,9 +101,9 @@ const Signup = ({navigation}) => {
       body: JSON.stringify({
         email: email.toLowerCase(),
         password: password,
-        username:username,
-        mobile:mobile,
-        gender:selectedGender == 0 ? 'Male' : "Female"
+        username: username,
+        mobile: mobile,
+        gender: selectedGender == 0 ? 'Male' : 'Female',
       }),
       headers: {
         Accept: 'application/json',
@@ -119,40 +118,27 @@ const Signup = ({navigation}) => {
         showMessage({
           message: responseData?.message,
           type: responseData.status ? 'success' : 'danger',
-          backgroundColor: responseData.status ? "green" : 'red', // background color
-          icon: responseData.status ? "success" : 'danger', // background color
-          color: "#fff", // text color
-      });
-      if(responseData.status){
-        dispatch(setAuthdata(responseData))
-        navigation.navigate(RoutesName.BottomTab)
-      }
-
+          backgroundColor: responseData.status ? 'green' : 'red', // background color
+          icon: responseData.status ? 'success' : 'danger', // background color
+          color: '#fff', // text color
+        });
+        if (responseData.status) {
+          dispatch(setAuthdata(responseData));
+          navigation.navigate(RoutesName.BottomTab);
+        }
       })
       .catch(error => {
         setLoading(false);
-        console.log(error , "==error==");
+        console.log(error, '==error==');
         console.log(error?.response);
       });
   };
   return (
     <View style={styles.container}>
-      <ScrollView style={{flex: 1, }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Loader visible={loading} />
 
-          <View
-            style={{
-              alignItems: 'center',
-              margin: wp(10),
-            }}>
-            <Image
-              style={styles.logo}
-              source={ImagePath.logoicon}
-            />
-          </View>
-
-          <Text style={styles.logoText}>Welcome Back {`\n`} to Sosal</Text>
           <View style={{flex: 1, flexDirection: 'column'}}>
             <CustomTextInput
               icon={require('../Images/user.png')}
@@ -190,41 +176,71 @@ const Signup = ({navigation}) => {
             />
             <View style={{flex: 1, margin: 4, marginBottom: 12}}>
               <Text style={styles.heading}>Select Gender</Text>
-              <View
-                style={styles.genderView}>
-
-
-                <TouchableOpacity onPress={()=> {
-                  setselectedGender(0);
-                }} 
-                style={[styles.male, {borderColor:selectedGender == 0 ? Colors.dark_theme1 : Colors.dark_theme3}]}>
+              <View style={styles.genderView}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setselectedGender(0);
+                  }}
+                  style={[
+                    styles.male,
+                    {
+                      borderColor:
+                        selectedGender == 0
+                          ? Colors.white
+                          : 'rgba(5,54,97,0.24)',
+                      backgroundColor:
+                        selectedGender == 0
+                          ? Colors.blue2
+                          : 'rgba(5,54,97,0.24)',
+                    },
+                  ]}>
                   <Image
                     source={ImagePath.manicon}
-                    style={{width: 30, height: 30, resizeMode: 'cover'}}
+                    style={{
+                      width: 30,
+                      height: 30,
+                      resizeMode: 'cover',
+                      tintColor:
+                        selectedGender == 0 ? Colors.white : Colors.black,
+                    }}
                   />
                 </TouchableOpacity>
-
 
                 <TouchableOpacity
-                onPress={()=> {
-                  setselectedGender(1);
-                }}
-                style={[styles.male, {borderColor:selectedGender == 1 ?  Colors.dark_theme1: Colors.dark_theme3}]}>
-
+                  onPress={() => {
+                    setselectedGender(1);
+                  }}
+                  style={[
+                    styles.male,
+                    {
+                      borderColor:
+                        selectedGender == 1
+                          ? Colors.white
+                          : 'rgba(5,54,97,0.24)',
+                      backgroundColor:
+                        selectedGender == 1
+                          ? Colors.blue2
+                          : 'rgba(5,54,97,0.24)',
+                    },
+                  ]}>
                   <Image
                     source={ImagePath.girlicon}
-                    style={{width: 30, height: 30, resizeMode: 'cover'}}
+                    style={{
+                      width: 30,
+                      height: 30,
+                      resizeMode: 'cover',
+                      tintColor:
+                        selectedGender == 1 ? Colors.white : Colors.black,
+                    }}
                   />
                 </TouchableOpacity>
-
-
               </View>
             </View>
           </View>
 
           <View style={{flex: 1, width: '100%'}}>
             <LinearGradient
-              colors={[Colors.dark_theme2, Colors.dark_theme3]}
+              colors={[Colors.blue2, Colors.blue1]}
               style={styles.button}>
               <TouchableOpacity
                 onPress={() => {
@@ -241,16 +257,13 @@ const Signup = ({navigation}) => {
             </LinearGradient>
           </View>
 
-          <View style={{flex: 1, marginBottom:10}}>
-            <Text
-              onPress={() => navigation.pop()}
-              style={{color: Colors.dark_theme2, fontSize: 14}}>
-             Alreay have account? 
-              <Text style={{color: Colors.dark_theme1, fontWeight: 'bold'}}>
-                Login
-              </Text>
-            </Text>
-          </View>
+          <TouchableOpacity
+            onPress={() => {
+              onClicks();
+            }}
+            style={{flex: 1, marginBottom: 10}}>
+            <Text style={{color: Colors.white, fontSize: 16}}> Go Back</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -260,23 +273,23 @@ const Signup = ({navigation}) => {
 export default Signup;
 
 const styles = StyleSheet.create({
-  genderView:{
+  genderView: {
     height: hp(10),
     flexDirection: 'row',
-    flex:1, 
-    justifyContent:'space-evenly'
+    flex: 1,
+    justifyContent: 'space-evenly',
   },
-   male: {
+  male: {
     borderWidth: 2,
     borderColor: Colors.dark_theme3,
     width: '40%',
-    height:hp(12), 
-    alignItems:'center', 
-    justifyContent:'center', 
-    borderRadius:10
+    height: hp(12),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
   },
   heading: {
-    color: Colors.dark_theme1,
+    color: Colors.white,
     alignSelf: 'flex-start',
     textAlign: 'left',
     width: '90%',
@@ -284,7 +297,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     height: '100%',
     width: '100%',
@@ -299,7 +311,8 @@ const styles = StyleSheet.create({
 
   logo: {
     borderRadius: 10,
-    height:100, width: 100,
+    height: 100,
+    width: 100,
   },
   logoText: {
     fontSize: 20,

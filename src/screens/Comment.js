@@ -1,6 +1,6 @@
-import { useRoute } from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Modal,
@@ -10,14 +10,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Image } from 'react-native-animatable';
-import { heightPercentageToDP } from 'react-native-responsive-screen';
-import { useSelector } from 'react-redux';
+import {Image} from 'react-native-animatable';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
+import {useSelector} from 'react-redux';
 import CommentOptionmodal from '../components/CommentOptionmodal';
 import Loader from '../components/Loader';
 import TimeAgo from '../components/TimeAgo';
-import { Colors } from '../utils/Colors';
-import { API_URLS, BASE_URL, ImagePath } from '../utils/Strings';
+import {Colors} from '../utils/Colors';
+import {API_URLS, BASE_URL, ImagePath} from '../utils/Strings';
 const Comment = () => {
   const auth = useSelector(state => state.auth);
   const rotes = useRoute();
@@ -110,54 +110,7 @@ const Comment = () => {
       console.log(e, '===error ===');
     }
   };
-  const renderItem = ({item, index}) => {
-    console.log(item, '==comenr');
-    return (
-      <View
-        style={{
-          width: '90%',
-          height: 100,
-          backgroundColor: Colors.white,
-          alignSelf: 'center',
-          marginTop: 20,
-          borderRadius: 15,
-          padding: 10,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-              source={ImagePath.usericon}
-              style={{width: 40, height: 40}}
-            />
-            <View style={{flexDirection: 'column', marginLeft: 10}}>
-              <Text style={{color: Colors.black, fontWeight: '500'}}>
-                {item.username}
-              </Text>
-              <Text>
-                <TimeAgo timestamp={item.createdAt} />
-              </Text>
-            </View>
-          </View>
 
-          {auth?.data?.data._id == item.userId ? (
-            <TouchableOpacity
-              onPress={() => {
-                setcommentOption(true);
-                setseleectedItem(item);
-              }}>
-              <Image source={ImagePath.menu} style={{width: 20, height: 20}} />
-            </TouchableOpacity>
-          ) : null}
-        </View>
-        <Text style={{margin: 4, color: Colors.black}}>{item.comment}</Text>
-      </View>
-    );
-  };
   const updateComment = () => {
     setloading(true);
     const myHeader = new Headers();
@@ -184,6 +137,62 @@ const Comment = () => {
         console.log(error, '=====error delete==='), setloading(false);
       });
   };
+  const renderItem = ({item, index}) => {
+    console.log(item, '==comenr');
+    return (
+      <View
+        style={{
+          width: '90%',
+          height: 100,
+          backgroundColor: Colors.black4,
+          alignSelf: 'center',
+          marginTop: 20,
+          borderRadius: 15,
+          padding: 10,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Image
+              source={{uri: item?.userId?.profilePic}}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                resizeMode: 'stretch',
+              }}
+            />
+            <View style={{flexDirection: 'column', marginLeft: 10}}>
+              <Text style={{color: Colors.white, fontWeight: '500'}}>
+                {item.username}
+              </Text>
+              <Text style={{color: Colors.white}}>
+                <TimeAgo timestamp={item.createdAt} />
+              </Text>
+            </View>
+          </View>
+
+          {auth?.data?.data._id == item.userId?._id ? (
+            <TouchableOpacity
+              onPress={() => {
+                setcommentOption(true);
+                setseleectedItem(item);
+              }}>
+              <Image
+                source={ImagePath.menu}
+                style={{width: 20, height: 20, tintColor: Colors.white}}
+              />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+        <Text style={{margin: 4, color: Colors.white}}>{item.comment}</Text>
+      </View>
+    );
+  };
   return (
     <View style={styles.container}>
       <Loader visible={loading} />
@@ -209,6 +218,7 @@ const Comment = () => {
       <View style={styles.bottomView}>
         <TextInput
           style={styles.input}
+          placeholderTextColor={Colors.white}
           placeholder="Type comment here..."
           value={comment}
           onChangeText={txt => setComment(txt)}
@@ -219,11 +229,10 @@ const Comment = () => {
           style={[
             styles.postbtn,
             {
-              backgroundColor:
-                comment == '' ? Colors.placeColor : Colors.dark_theme3,
+              backgroundColor: comment == '' ? Colors.placeColor : Colors.black,
             },
           ]}>
-          <Text style={styles.btntxt}> comment</Text>
+          <Text style={[styles.btntxt]}> comment</Text>
         </TouchableOpacity>
       </View>
       <Modal transparent visible={openupdatecommentmodal}>
@@ -235,20 +244,20 @@ const Comment = () => {
               value={newcomment}
               onChangeText={txt => setnewcomment(txt)}
               style={styles.commentinput}
+              placeholderTextColor={Colors.white}
               placeholder="Type comment  here ..."
             />
             <View style={styles.bottomview}>
               <TouchableOpacity
                 onPress={() => setOpenupdatecommentmodal(false)}
                 style={styles.cancelbtn}>
-                <Text style={styles.btntxt}>Cancel</Text>
+                <Text style={[styles.btntxt, {color: Colors.black}]}>
+                  Cancel
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => updateComment()}
-                style={[
-                  styles.cancelbtn,
-                  {backgroundColor: Colors.dark_theme3},
-                ]}>
+                style={[styles.cancelbtn, {backgroundColor: Colors.black}]}>
                 <Text style={styles.btntxt}>Save</Text>
               </TouchableOpacity>
             </View>
@@ -286,32 +295,33 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 20,
     borderRadius: 10,
+    color: Colors.white,
   },
   editTx: {
     fontSize: 16,
-    color: Colors.black,
+    color: Colors.white,
     alignSelf: 'center',
     marginTop: 20,
   },
   mainView: {
     width: '90%',
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.black5,
     borderRadius: 10,
     paddingBottom: 20,
   },
   modalView: {
     flex: 1,
-    backgroundColor: Colors.modalbg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   container: {
     flex: 1,
+    backgroundColor: Colors.black1,
   },
   bottomView: {
     width: '100%',
     height: 70,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.black4,
     elevation: 5,
     position: 'absolute',
     bottom: 0,
@@ -324,6 +334,7 @@ const styles = StyleSheet.create({
   input: {
     width: '70%',
     height: '100%',
+    color: Colors.white,
   },
   postbtn: {
     width: '20%',

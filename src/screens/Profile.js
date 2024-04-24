@@ -1,27 +1,38 @@
-import { useIsFocused } from '@react-navigation/native'; // Import the hook
+import {useIsFocused} from '@react-navigation/native'; // Import the hook
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Image } from 'react-native-animatable';
+import {Image} from 'react-native-animatable';
 import {
   heightPercentageToDP,
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import EditCapsion from '../components/EditCapsion';
 import Loader from '../components/Loader';
 import OptionModal from '../components/OptionModal';
 import TimeAgo from '../components/TimeAgo';
-import { Colors } from '../utils/Colors';
-import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
+import {Colors} from '../utils/Colors';
+import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
+import {
+  GestureHandlerRootView,
+  TapGestureHandler,
+} from 'react-native-gesture-handler';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+} from 'react-native-reanimated';
 
 const Profile = ({navigation}) => {
   const auth = useSelector(state => state.auth);
@@ -39,6 +50,27 @@ const Profile = ({navigation}) => {
     }
   }, [isFocused]);
 
+  // like animation start
+  const [animatedIndex, setAnimatedIndex] = useState(null);
+  const scale = useSharedValue(0);
+  const ImageComappoennt = Animated.createAnimatedComponent(Image);
+
+  const dobleTab = useCallback(index => {
+    setAnimatedIndex(index);
+    scale.value = withSpring(1, undefined, isFinish => {
+      if (isFinish) {
+        scale.value = withDelay(100, withSpring(0));
+      }
+    });
+  }, []);
+
+  const animatedStle = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: Math.max(scale.value, 0)}],
+    };
+  });
+
+  // close code
   const featchData = () => {
     axios
       .get(BASE_URL + API_URLS.GET_USER_URL + '/' + auth?.data?.data?._id)
@@ -102,7 +134,7 @@ const Profile = ({navigation}) => {
       });
   };
   const likePost = item => {
-    setloading(true);
+    // setloading(true);
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
 
@@ -113,7 +145,7 @@ const Profile = ({navigation}) => {
       .put(BASE_URL + API_URLS.LIKE_POST_URL + `/` + item._id, body)
       .then(response => {
         console.log(response.data, '==response delete====='),
-          setloading(false),
+          // setloading(false),
           featchData();
       })
       .catch(error => {
@@ -122,161 +154,219 @@ const Profile = ({navigation}) => {
   };
 
   const renderItem = ({item, index}) => {
+    console.log(item);
     const checkLike = item.likes.find(like => like == auth?.data?.data._id);
     return (
-      <View
-        style={[
-          styles.feed,
-          {marginBottom: postdata.length - 1 == index ? 100 : 0},
-        ]}>
-        <View style={styles.topView}>
-          <View style={styles.topLeft}>
-            <Image source={ImagePath.usericon} style={styles.profile} />
-            <View style={styles.usernameView}>
-              <Text style={styles.captiontxt}>{item.username}</Text>
-              <Text>
-                User post created: <TimeAgo timestamp={item.createdAt} />
-              </Text>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <View
+          style={[
+            styles.feed,
+            {marginBottom: postdata.length - 1 == index ? 100 : 0},
+          ]}>
+          <View style={styles.topView}>
+            <View style={styles.topLeft}>
+              <Image
+                source={
+                  item?.userId?.profilePic
+                    ? {uri: item?.userId?.profilePic}
+                    : ImagePath.usericon
+                }
+                style={styles.profile}
+              />
+              <View style={styles.usernameView}>
+                <Text style={styles.captiontxt}>{item.username}</Text>
+                <Text style={{color: Colors.white}}>
+                  User post created: <TimeAgo timestamp={item.createdAt} />
+                </Text>
+              </View>
             </View>
+            {auth?.data?.data._id == item.userId?._id ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setopenOpsion(true), setselectedItem(item);
+                }}>
+                <Image
+                  source={ImagePath.menu}
+                  style={{width: 24, height: 24, tintColor: Colors.white}}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
-          {auth?.data?.data._id == item.userId ? (
+          <Text style={styles.capttxt}>{item.caption}</Text>
+
+          <TapGestureHandler
+            maxDelayMs={250}
+            numberOfTaps={2}
+            onActivated={() => {
+              dobleTab(index), likePost(item);
+            }}>
+            <Animated.View
+              style={{
+                flex: 1,
+                width: '100%',
+                height: 200,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ImageBackground
+                source={{uri: item.imageUrl}}
+                style={[
+                  styles.imagePost,
+                  {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  },
+                ]}>
+                {animatedIndex === index && item.imageUrl !== '' && (
+                  <ImageComappoennt
+                    source={ImagePath.hearticon}
+                    style={[
+                      {
+                        width: 100,
+                        height: 100,
+                        tintColor: checkLike ? 'red' : Colors.white,
+                      },
+                      animatedStle,
+                    ]}
+                  />
+                )}
+              </ImageBackground>
+            </Animated.View>
+          </TapGestureHandler>
+          <View style={styles.bottomView}>
             <TouchableOpacity
               onPress={() => {
-                setopenOpsion(true), setselectedItem(item);
-              }}>
-              <Image source={ImagePath.menu} style={{width: 24, height: 24}} />
+                likePost(item);
+              }}
+              style={styles.bottomLeft}>
+              <Image
+                source={ImagePath.hearticon}
+                style={[
+                  styles.heart,
+                  {tintColor: checkLike ? Colors.red : Colors.white},
+                ]}
+              />
+              <Text style={styles.captiontxt}>
+                {` ${item.likes.length} Likes`}
+              </Text>
             </TouchableOpacity>
-          ) : null}
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(RoutesName.Comment, {id: item._id});
+              }}
+              style={styles.bottomLeft}>
+              <Image source={ImagePath.chaticon} style={styles.heart} />
+              <Text style={styles.captiontxt}>
+                {` ${item.comments.length ? item.comments.length : 0} comments`}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <Text style={styles.capttxt}>{item.caption}</Text>
-
-        {item.imageUrl != '' && (
-          <Image source={{uri: item.imageUrl}} style={styles.imagePost} />
-        )}
-        <View style={styles.bottomView}>
-          <TouchableOpacity
-            onPress={() => {
-              likePost(item);
-            }}
-            style={styles.bottomLeft}>
-            <Image
-              source={ImagePath.hearticon}
-              style={[styles.heart, {tintColor: checkLike ? 'red' : 'black'}]}
-            />
-            <Text style={styles.captiontxt}>{item.likes.length} Likes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate(RoutesName.Comment, {id: item._id});
-            }}
-            style={styles.bottomLeft}>
-            <Image source={ImagePath.chaticon} style={styles.heart} />
-            <Text style={styles.captiontxt}>
-              {item.comments.length ? item.comments.length : 0} comments
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </GestureHandlerRootView>
     );
   };
 
   return (
-   
-
-    <ScrollView
-      nestedScrollEnabledm
+    <FlatList
+      nestedScrollEnabled
       showsVerticalScrollIndicator={false}
-      style={styles.container}>
-      <Loader visible={loading} />
-      <OptionModal
-        visible={openOpsion}
-        onClick={x => {
-          setopenOpsion(false);
-          if (x == 2) {
-            console.log('delete called');
-            deletePost();
-          } else {
-            setopenEditM(true);
-          }
-        }}
-        onClose={() => {
-          setopenOpsion(false);
-        }}
-      />
-      <EditCapsion
-        data={selectedItem}
-        visible={openEditM}
-        onClick={x => {
-          setopenEditM(false), updatePost(x);
-        }}
-        onClose={() => setopenEditM(false)}
-      />
-      <View style={styles.coverAre}>
-        {profileData.coverPic != null && profileData.coverPic != '' ? (
-          <Image
-            source={{uri: profileData.coverPic}}
-            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+      style={styles.container}
+      ListHeaderComponent={() => (
+        <>
+          <Loader visible={loading} />
+          <OptionModal
+            visible={openOpsion}
+            onClick={x => {
+              setopenOpsion(false);
+              if (x == 2) {
+                console.log('delete called');
+                deletePost();
+              } else {
+                setopenEditM(true);
+              }
+            }}
+            onClose={() => {
+              setopenOpsion(false);
+            }}
           />
-        ) : null}
-      </View>
-
-      <View style={styles.profileView}>
-        {profileData?.profilePic != '' ? (
-          <Image
-            source={{uri: profileData?.profilePic}}
-            style={[styles.profileView, {marginTop: 0, marginLeft: 0}]}
+          <EditCapsion
+            data={selectedItem}
+            visible={openEditM}
+            onClick={x => {
+              setopenEditM(false), updatePost(x);
+            }}
+            onClose={() => setopenEditM(false)}
           />
-        ) : (
-          <>
-            <Image source={ImagePath.usericon} style={styles.imaview} />
-          </>
-        )}
-      </View>
-
-      <Text style={styles.useRName}>
-        {profileData ? profileData?.username : ''}
-      </Text>
-      <Text style={styles.emails}>{profileData ? profileData?.email : ''}</Text>
-      <View style={styles.follwview}>
-        <View style={styles.countView}>
-          <Text style={styles.values}>
-            {profileData.follower?.length ? profileData?.follower?.length : 0}
+          <View style={styles.coverAre}>
+            {profileData.coverPic != null && profileData.coverPic != '' ? (
+              <Image
+                source={{uri: profileData.coverPic}}
+                style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+              />
+            ) : null}
+          </View>
+          <View style={styles.profileView}>
+            {profileData?.profilePic != '' ? (
+              <Image
+                source={{uri: profileData?.profilePic}}
+                style={[styles.profileView, {marginTop: 0, marginLeft: 0}]}
+              />
+            ) : (
+              <>
+                <Image source={ImagePath.usericon} style={styles.imaview} />
+              </>
+            )}
+          </View>
+          <Text style={styles.useRName}>
+            {profileData ? profileData?.username : ''}
           </Text>
-          <Text style={styles.titel}>Followers</Text>
-        </View>
-        <View style={styles.countView}>
-          <Text style={styles.values}>
-            {profileData.following?.length ? profileData?.following?.length : 0}
+          <Text style={styles.emails}>
+            {profileData ? profileData?.email : ''}
           </Text>
-          <Text style={styles.titel}>Following</Text>
-        </View>
-        <View style={styles.countView}>
-          <Text style={styles.values}>
-            {profileData.follower?.length ? profileData?.follower?.length : 0}
-          </Text>
-          <Text style={styles.titel}>Posts</Text>
-        </View>
-      </View>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(RoutesName.EditProfile, {data: profileData});
-        }}
-        style={styles.editBtn}>
-        <Text style={styles.edittx}>Edit Profile</Text>
-      </TouchableOpacity>
-
-      <FlatList
-        data={postdata}
-        renderItem={(item, index) => renderItem(item, index)}
-        showsVerticalScrollIndicator={false}
-      />
-    </ScrollView>
+          <View style={styles.follwview}>
+            <View style={styles.countView}>
+              <Text style={styles.values}>
+                {profileData.follower?.length
+                  ? profileData?.follower?.length
+                  : 0}
+              </Text>
+              <Text style={styles.titel}>Followers</Text>
+            </View>
+            <View style={styles.countView}>
+              <Text style={styles.values}>
+                {profileData.following?.length
+                  ? profileData?.following?.length
+                  : 0}
+              </Text>
+              <Text style={styles.titel}>Following</Text>
+            </View>
+            <View style={styles.countView}>
+              <Text style={styles.values}>
+                {profileData.follower?.length
+                  ? profileData?.follower?.length
+                  : 0}
+              </Text>
+              <Text style={styles.titel}>Posts</Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(RoutesName.EditProfile, {data: profileData});
+            }}
+            style={styles.editBtn}>
+            <Text style={styles.edittx}>Edit Profile</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      data={postdata}
+      renderItem={(item, index) => renderItem(item, index)}
+    />
   );
 };
 
 export default Profile;
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   profilebtn: {
     width: '100%',
     height: '100%',
@@ -286,8 +376,8 @@ const styles = StyleSheet.create({
     height: 150,
     backgroundColor: Colors.dark_theme3,
   },
-  values: {fontSize: 25, fontWeight: '600', color: Colors.black},
-  titel: {fontSize: 16, marginTop: 5, color: Colors.black},
+  values: {fontSize: 18, fontWeight: '600', color: Colors.white},
+  titel: {fontSize: 16, marginTop: 5, color: Colors.white},
   countView: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -295,18 +385,18 @@ const styles = StyleSheet.create({
   follwview: {
     width: '90%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginTop: 20,
     alignSelf: 'center',
   },
   edittx: {
-    fontSize: 18,
-    color: Colors.black,
+    fontSize: 14,
+    color: Colors.white,
     alignSelf: 'center',
     padding: 10,
   },
   editBtn: {
-    width: '90%',
+    width: '50%',
     height: heightPercentageToDP(7),
     borderRadius: 10,
     borderWidth: 1,
@@ -314,18 +404,19 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
+    borderColor: Colors.white,
   },
   useRName: {
-    fontSize: 25,
+    fontSize: 17,
     marginTop: 10,
     fontWeight: '500',
-    color: Colors.black,
+    color: Colors.white,
     marginLeft: 20,
   },
   emails: {
-    fontSize: 18,
+    fontSize: 14,
     marginLeft: 20,
-    color: Colors.black,
+    color: Colors.white,
     width: '90%',
     fontWeight: '400',
   },
@@ -342,7 +433,7 @@ const styles = StyleSheet.create({
   imaview: {width: 50, height: 50, tintColor: Colors.white},
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.black1,
   },
   followtxt: {color: Colors.white},
   follwobtn: {
@@ -355,7 +446,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bottomLeft: {flexDirection: 'row'},
-  heart: {width: 24, height: 24},
+  heart: {width: 24, height: 24, tintColor: Colors.white},
   bottomView: {
     width: '90%',
     flexDirection: 'row',
@@ -364,7 +455,7 @@ const styles = StyleSheet.create({
     margin: hp(2),
   },
   imagePost: {
-    width: '90%',
+    width: '100%',
     height: 200,
     resizeMode: 'contain',
     marginTop: 10,
@@ -373,6 +464,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginTop: 10,
     alignSelf: 'center',
+    color: Colors.white,
   },
   usernameView: {
     margin: 4,
@@ -397,8 +489,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 25,
-    tintColor: Colors.placeColor,
-    marginLeft: 10,
+    marginHorizontal: 10,
   },
   absolute: {
     position: 'absolute',
@@ -409,116 +500,13 @@ const styles = StyleSheet.create({
   },
   feed: {
     width: '90%',
-    backgroundColor: Colors.background,
-    marginTop: 20,
-    borderRadius: 15,
-    alignSelf: 'center',
-    paddingBottom: 20,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  titel: {
-    fontSize: 28,
-    color: Colors.dark_theme2,
-    fontWeight: 'bold',
-    marginLeft: wp(2),
-  },
-  bottomnav: {
-    width: '100%',
-    height: hp(10),
-    position: 'absolute',
-    bottom: 10,
-    backgroundColor: '#f2f2f2',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-  },
-  bottamTab: {
-    width: '25%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  followtxt: {color: Colors.white},
-  follwobtn: {
-    height: hp(6),
-    backgroundColor: Colors.dark_theme3,
-    paddingLeft: 15,
-    paddingRight: 15,
-    marginTop: 10,
-    borderRadius: 10,
-    justifyContent: 'center',
-  },
-  bottomLeft: {flexDirection: 'row'},
-  heart: {width: 24, height: 24},
-  bottomView: {
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    margin: hp(2),
-  },
-  imagePost: {
-    width: '90%',
-    height: 200,
-    resizeMode: 'contain',
-    marginTop: 10,
-  },
-  capttxt: {
-    width: '90%',
-    marginTop: 10,
-    alignSelf: 'center',
-  },
-  usernameView: {
-    margin: 4,
-  },
-  timestam: {fontSize: 10, color: Colors.placeColor},
-  captiontxt: {
-    fontSize: 18,
-    textAlignVertical: 'center',
-    color: Colors.placeColor,
-  },
-  topView: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingRight: 15,
-    paddingTop: 10,
-  },
-  topLeft: {
-    flexDirection: 'row',
-  },
-  profile: {
-    width: 40,
-    height: 40,
-    borderRadius: 25,
-    tintColor: Colors.placeColor,
-    marginLeft: 10,
-  },
-  absolute: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-  },
-  feed: {
-    width: '90%',
-    backgroundColor: Colors.background,
+    // backgroundColor: Colors.background,
     marginTop: 20,
     borderRadius: 15,
     alignSelf: 'center',
     paddingBottom: 20,
   },
 
-  titel: {
-    fontSize: 28,
-    color: Colors.dark_theme2,
-    fontWeight: 'bold',
-    marginLeft: wp(2),
-  },
   bottomnav: {
     width: '100%',
     height: hp(10),

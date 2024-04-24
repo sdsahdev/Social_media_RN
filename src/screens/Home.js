@@ -1,8 +1,16 @@
 import {useIsFocused} from '@react-navigation/native'; // Import the hook
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Image} from 'react-native-animatable';
+import React, {useCallback, useEffect, useState} from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  ImageBackground,
+  Dimensions,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -18,7 +26,21 @@ import {Colors} from '../utils/Colors';
 import {logout} from '../redux/Slice/AuthSlice';
 import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
 import {getSocket} from '../socket/socket';
-
+import changeNavigationBarColor, {
+  hideNavigationBar,
+  showNavigationBar,
+} from 'react-native-navigation-bar-color';
+import {
+  GestureHandlerRootView,
+  TapGestureHandler,
+} from 'react-native-gesture-handler';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+} from 'react-native-reanimated';
+import CommanModal from '../components/CommanModal';
 const Home = ({navigation}) => {
   const isFocused = useIsFocused();
   const socket = getSocket();
@@ -31,7 +53,10 @@ const Home = ({navigation}) => {
   const [selectedItem, setselectedItem] = useState(null);
   const auth = useSelector(state => state.auth);
   const token = useSelector(state => state.auth.token);
+  const [animatedIndex, setAnimatedIndex] = useState(null);
+  const [showLogout, setshowLogout] = useState(false);
   console.log(socket.id, '===socketid====');
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (isFocused) {
@@ -40,6 +65,26 @@ const Home = ({navigation}) => {
     }
   }, [isFocused]);
 
+  // like animation start
+  const scale = useSharedValue(0);
+  const ImageComappoennt = Animated.createAnimatedComponent(Image);
+
+  const dobleTab = useCallback(index => {
+    setAnimatedIndex(index);
+    scale.value = withSpring(1, undefined, isFinish => {
+      if (isFinish) {
+        scale.value = withDelay(100, withSpring(0));
+      }
+    });
+  }, []);
+
+  const animatedStle = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: Math.max(scale.value, 0)}],
+    };
+  });
+
+  // close code
   const followList = () => {
     axios
       .get(BASE_URL + API_URLS.GET_USER_URL + '/' + auth?.data?.data?._id)
@@ -106,79 +151,6 @@ const Home = ({navigation}) => {
     }
   };
 
-  const renderItem = ({item, index}) => {
-    // console.log(item);
-    const checkLike = item.likes.find(like => like == auth?.data?.data._id);
-    const followCheck = followListdata.find(follow => follow == item.userId);
-    return (
-      <View
-        style={[
-          styles.feed,
-          {marginBottom: postdata.length - 1 == index ? 100 : 0},
-        ]}>
-        <View style={styles.topView}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate(RoutesName.OtherProfile, {id: item.userId})
-            }
-            style={styles.topLeft}>
-            <Image source={ImagePath.usericon} style={styles.profile} />
-            <View style={styles.usernameView}>
-              <Text style={styles.captiontxt}>{item.username}</Text>
-              <Text>
-                User post created: <TimeAgo timestamp={item.createdAt} />
-              </Text>
-            </View>
-          </TouchableOpacity>
-          {auth?.data?.data._id == item.userId ? (
-            <TouchableOpacity
-              onPress={() => {
-                setopenOpsion(true), setselectedItem(item);
-              }}>
-              <Image source={ImagePath.menu} style={{width: 24, height: 24}} />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={() => followApi(item.userId)}
-              style={styles.follwobtn}>
-              <Text style={styles.followtxt}>
-                {followCheck ? 'Unfollow' : 'Follow'}{' '}
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <Text style={styles.capttxt}>{item.caption}</Text>
-
-        {item.imageUrl != '' && (
-          <Image source={{uri: item.imageUrl}} style={styles.imagePost} />
-        )}
-        <View style={styles.bottomView}>
-          <TouchableOpacity
-            onPress={() => {
-              likePost(item);
-            }}
-            style={styles.bottomLeft}>
-            <Image
-              source={ImagePath.hearticon}
-              style={[styles.heart, {tintColor: checkLike ? 'red' : 'black'}]}
-            />
-            <Text style={styles.captiontxt}>{item.likes.length} Likes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate(RoutesName.Comment, {id: item._id});
-            }}
-            style={styles.bottomLeft}>
-            <Image source={ImagePath.chaticon} style={styles.heart} />
-            <Text style={styles.captiontxt}>
-              {item.comments.length ? item.comments.length : 0} comments
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
   const deletePost = () => {
     setloading(true);
     const myHeader = new Headers();
@@ -216,7 +188,6 @@ const Home = ({navigation}) => {
       });
   };
   const likePost = item => {
-    setloading(true);
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
 
@@ -226,13 +197,147 @@ const Home = ({navigation}) => {
     axios
       .put(BASE_URL + API_URLS.LIKE_POST_URL + '/' + item._id, body)
       .then(response => {
-        console.log(response.data, '==response delete====='),
-          setloading(false),
-          featchData();
+        console.log(response.data, '==response delete====='), featchData();
       })
       .catch(error => {
         console.log(error, '=====error delete==='), setloading(false);
       });
+  };
+
+  const renderItem = ({item, index}) => {
+    console.log(item);
+
+    const checkLike = item.likes.find(like => like == auth?.data?.data._id);
+    const followCheck = followListdata.find(
+      follow => follow == item.userId?._id,
+    );
+    return (
+      <GestureHandlerRootView style={{flex: 1}}>
+        <View
+          style={[
+            styles.feed,
+            {
+              marginBottom: postdata.length - 1 == index ? 100 : 0,
+              alignItems: 'center',
+            },
+          ]}>
+          <View style={styles.topView}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate(RoutesName.OtherProfile, {
+                  id: item.userId?._id,
+                })
+              }
+              style={styles.topLeft}>
+              <Image
+                source={
+                  item?.userId?.profilePic
+                    ? {uri: item?.userId?.profilePic}
+                    : ImagePath.usericon
+                }
+                style={styles.profile}
+              />
+              <View style={styles.usernameView}>
+                <Text
+                  style={[styles.captiontxt, {fontFamily: 'Raleway-Medium'}]}>
+                  {item.username}
+                </Text>
+                <Text
+                  style={{color: Colors.white, fontFamily: 'Raleway-Regular'}}>
+                  User post created: <TimeAgo timestamp={item.createdAt} />
+                </Text>
+              </View>
+            </TouchableOpacity>
+            {auth?.data?.data._id == item.userId?._id ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setopenOpsion(true), setselectedItem(item);
+                }}>
+                <Image
+                  source={ImagePath.menu}
+                  style={{width: 24, height: 24}}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => followApi(item.userId?._id)}
+                style={styles.follwobtn}>
+                <Text style={[styles.followtxt, {fontFamily: 'Raleway-Bold'}]}>
+                  {followCheck ? 'Unfollow' : 'Follow'}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <Text style={[styles.capttxt, {fontFamily: 'Raleway-Medium'}]}>
+            {item.caption}
+          </Text>
+          <TapGestureHandler
+            maxDelayMs={250}
+            numberOfTaps={2}
+            onActivated={() => {
+              dobleTab(index), likePost(item);
+            }}>
+            <Animated.View
+              style={{
+                flex: 1,
+                width: '100%',
+                height: 200,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ImageBackground
+                source={{uri: item.imageUrl}}
+                style={[
+                  styles.imagePost,
+                  {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  },
+                ]}>
+                {animatedIndex === index && item.imageUrl !== '' && (
+                  <ImageComappoennt
+                    source={ImagePath.hearticon}
+                    style={[
+                      {
+                        width: 100,
+                        height: 100,
+                        tintColor: checkLike ? 'red' : Colors.white,
+                      },
+                      animatedStle,
+                    ]}
+                  />
+                )}
+              </ImageBackground>
+            </Animated.View>
+          </TapGestureHandler>
+          <View style={styles.bottomView}>
+            <TouchableOpacity
+              onPress={() => {
+                likePost(item);
+              }}
+              style={styles.bottomLeft}>
+              <Image
+                source={ImagePath.hearticon}
+                style={[styles.heart, {tintColor: checkLike ? 'red' : 'white'}]}
+              />
+              <Text style={styles.captiontxt}>
+                {` ${item.likes.length} Likes`}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(RoutesName.Comment, {id: item._id});
+              }}
+              style={styles.bottomLeft}>
+              <Image source={ImagePath.chaticon} style={styles.heart} />
+              <Text style={styles.captiontxt}>
+                {` ${item.comments.length ? item.comments.length : 0} comments`}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </GestureHandlerRootView>
+    );
   };
 
   return (
@@ -261,26 +366,44 @@ const Home = ({navigation}) => {
         onClose={() => setopenEditM(false)}
       />
       <Loader visible={loading} />
-      <Text style={styles.titel}>Sosial</Text>
+      <Text style={[styles.titel, {fontFamily: 'Dancing Script Bold'}]}>
+        Flex Flipe
+      </Text>
       <TouchableOpacity
         onPress={() => {
-          dispatch(logout());
-          navigation.navigate(RoutesName.Login);
+          setshowLogout(true);
         }}
         style={{position: 'absolute', right: 10, top: 10}}>
-        <Image source={ImagePath.closeicon} style={{width: 24, height: 24}} />
+        <Image
+          source={ImagePath.closeicon}
+          style={{width: 24, height: 24, tintColor: Colors.white}}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
           navigation.navigate(RoutesName.ChatScreen);
         }}
         style={{position: 'absolute', right: 50, top: 10}}>
-        <Image source={ImagePath.chaticon} style={{width: 24, height: 24}} />
+        <Image
+          source={ImagePath.chaticon}
+          style={{width: 24, height: 24, tintColor: Colors.white}}
+        />
       </TouchableOpacity>
       <FlatList
         data={postdata}
         renderItem={(item, index) => renderItem(item, index)}
         showsVerticalScrollIndicator={false}
+      />
+      <CommanModal
+        titel={'Logout'}
+        showtxt={'Are you sure for logout?'}
+        cancelpress={() => setshowLogout(false)}
+        savedata={() => {
+          setshowLogout(false);
+          dispatch(logout());
+          navigation.navigate(RoutesName.Signup);
+        }}
+        status={showLogout}
       />
     </View>
   );
@@ -292,7 +415,7 @@ const styles = StyleSheet.create({
   followtxt: {color: Colors.white},
   follwobtn: {
     height: hp(6),
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.black5,
     paddingLeft: 15,
     paddingRight: 15,
     marginTop: 10,
@@ -300,7 +423,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bottomLeft: {flexDirection: 'row'},
-  heart: {width: 24, height: 24},
+  heart: {width: 24, height: 24, tintColor: Colors.white},
   bottomView: {
     width: '90%',
     flexDirection: 'row',
@@ -309,7 +432,7 @@ const styles = StyleSheet.create({
     margin: hp(2),
   },
   imagePost: {
-    width: '90%',
+    width: '100%',
     height: 200,
     resizeMode: 'contain',
     marginTop: 10,
@@ -318,6 +441,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginTop: 10,
     alignSelf: 'center',
+    color: Colors.white,
   },
   usernameView: {
     margin: 4,
@@ -326,7 +450,7 @@ const styles = StyleSheet.create({
   captiontxt: {
     fontSize: 18,
     textAlignVertical: 'center',
-    color: Colors.placeColor,
+    color: Colors.white,
   },
   topView: {
     flexDirection: 'row',
@@ -337,12 +461,13 @@ const styles = StyleSheet.create({
   },
   topLeft: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   profile: {
     width: 40,
     height: 40,
     borderRadius: 25,
-    tintColor: Colors.placeColor,
     marginLeft: 10,
   },
   absolute: {
@@ -353,21 +478,21 @@ const styles = StyleSheet.create({
     right: 0,
   },
   feed: {
-    width: '90%',
-    backgroundColor: Colors.background,
-    marginTop: 20,
+    width: '100%',
+    // backgroundColor: Colors.blackcombi,
+    marginTop: 10,
     borderRadius: 15,
     alignSelf: 'center',
     paddingBottom: 20,
+    justifyContent: 'center',
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.black1,
   },
   titel: {
-    fontSize: 28,
-    color: Colors.dark_theme2,
-    fontWeight: 'bold',
+    fontSize: 30,
+    color: Colors.white,
     marginLeft: wp(2),
   },
   bottomnav: {

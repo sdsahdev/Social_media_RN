@@ -1,6 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import ChatScreen from '../screens/ChatScreen';
@@ -22,14 +22,33 @@ import MessageScreen from '../screens/MessageScreen';
 import GallaryScreen from '../screens/GallaryScreen';
 import ListWithoutChat from '../screens/ListWithoutChat';
 import ChatDetails from '../screens/ChatDetails';
+import VideoCalling from '../screens/VideoCalling';
+import SigninOption from '../screens/SigninOption';
+import changeNavigationBarColor, {
+  hideNavigationBar,
+  showNavigationBar,
+} from 'react-native-navigation-bar-color';
+import {Colors} from '../utils/Colors';
 
 const Stack = createNativeStackNavigator();
+
 const MainNavigator = () => {
+  useEffect(() => {
+    example();
+  });
+  example = async () => {
+    try {
+      const response = await changeNavigationBarColor(Colors.black3, false);
+      console.log(response); // {success: true}
+    } catch (e) {
+      console.log(e); // {success: false}
+    }
+  };
   const authData = useSelector(state => state.auth.data);
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Splash"
+        initialRouteName={RoutesName.Splash}
         screenOptions={{
           headerShown: false,
         }}>
@@ -46,6 +65,8 @@ const MainNavigator = () => {
         <Stack.Screen name={RoutesName.OtherProfile} component={OtherProfile} />
         <Stack.Screen name={RoutesName.ChatScreen} component={ChatScreen} />
         <Stack.Screen name={RoutesName.ChatDetails} component={ChatDetails} />
+        <Stack.Screen name={RoutesName.VideoCalling} component={VideoCalling} />
+        <Stack.Screen name={RoutesName.SigninOption} component={SigninOption} />
         <Stack.Screen
           name={RoutesName.ListWithoutChat}
           component={ListWithoutChat}
