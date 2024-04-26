@@ -95,7 +95,7 @@ const ChatScreen = ({navigation}) => {
     const backgroundColor = interpolateColor(
       btnanivalue.value,
       [1, 0],
-      ['white', Colors.blue],
+      ['white', Colors.white],
     );
     return {
       backgroundColor,
@@ -291,7 +291,6 @@ const ChatScreen = ({navigation}) => {
             }}
             style={{
               justifyContent: 'center',
-              backgroundColor: 'red',
               borderRadius: 10,
               padding: 10,
               height: hp(8),
@@ -301,27 +300,11 @@ const ChatScreen = ({navigation}) => {
               style={{width: 25, height: 25, tintColor: Colors.white}}
             />
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => {
-              handleCloseSwipeable(index), edit_gropname();
-            }}
-            style={{
-              justifyContent: 'center',
-              padding: 10,
-              backgroundColor: 'blue',
-              borderRadius: 10,
-              height: hp(8),
-              marginLeft: 4,
-            }}>
-            <Image
-              source={ImagePath.editicon}
-              style={{width: 25, height: 25, tintColor: Colors.white}}
-            />
-          </TouchableOpacity> */}
         </View>
       );
     };
-
+    console.log(item.participants[0].profilePic, '==chat item');
+    const imagehere = item.participants[0].profilePic;
     return (
       <Swipeable
         ref={swipeableRefs.current[index]}
@@ -333,10 +316,20 @@ const ChatScreen = ({navigation}) => {
           }
           style={styles.chatList}>
           <View style={styles.ImgView}>
-            <Image source={ImagePath.usericon} style={styles.imageprofile} />
+            <Image
+              source={imagehere != '' ? {uri: imagehere} : ImagePath.slimuser}
+              style={[
+                styles.imageprofile,
+                {tintColor: imagehere ? null : Colors.white},
+              ]}
+            />
             <View style={{marginLeft: 10}}>
-              <Text>{item?.name}</Text>
-              <Text>{item?.name}</Text>
+              <Text style={{color: Colors.white}}>{item?.name}</Text>
+              {item?.lastMessage?.content && (
+                <Text style={{color: Colors.placeColor}}>
+                  {item?.lastMessage?.content}
+                </Text>
+              )}
             </View>
           </View>
           {chatCount && (
@@ -352,7 +345,31 @@ const ChatScreen = ({navigation}) => {
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: Colors.black}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: 10,
+            backgroundColor: Colors.black2,
+          }}>
+          <TouchableOpacity onPress={() => navigation.pop()}>
+            <Image
+              source={ImagePath.back}
+              style={{
+                tintColor: Colors.white,
+                width: wp(6),
+                height: wp(6),
+                padding: 10,
+              }}
+            />
+          </TouchableOpacity>
+
+          <Text style={{color: Colors.white, fontSize: wp(5), margin: 10}}>
+            Message
+          </Text>
+        </View>
+
         <FlatList
           data={chatData}
           renderItem={(item, index) => renderItem(item, index)}
@@ -368,7 +385,7 @@ const ChatScreen = ({navigation}) => {
               position: 'absolute',
               right: wp(-150),
               bottom: wp(-150),
-              backgroundColor: Colors.booking_slelect_opac,
+              backgroundColor: Colors.offwhite,
             },
             scaleStyle,
           ]}
@@ -393,7 +410,7 @@ const ChatScreen = ({navigation}) => {
               optionvalue1.value = withTiming(wp(80), {duration: 300});
               optionvalue2.value = withTiming(wp(80), {duration: 300});
               optionvalue3.value = withTiming(wp(80), {duration: 300});
-              setopenGropModal(true);
+              navigation.navigate(RoutesName.ListWithoutChat);
             }}
             style={[
               {
@@ -420,7 +437,7 @@ const ChatScreen = ({navigation}) => {
               optionvalue1.value = withTiming(wp(80), {duration: 300});
               optionvalue2.value = withTiming(wp(80), {duration: 300});
               optionvalue3.value = withTiming(wp(80), {duration: 300});
-              navigation.navigate(RoutesName.ListWithoutChat);
+              setopenGropModal(true);
             }}
             style={[
               {
@@ -462,8 +479,8 @@ const ChatScreen = ({navigation}) => {
           }}
           style={[
             {
-              width: wp(20),
-              height: wp(20),
+              width: wp(15),
+              height: wp(15),
               borderRadius: wp(10),
               backgroundColor: Colors.sky,
               position: 'absolute',
@@ -481,11 +498,13 @@ const ChatScreen = ({navigation}) => {
         </AnimatedTouchable>
 
         <ShowUserList
-          title={'User Lis'}
+          title={'User list for create group'}
           state={openGropModal}
           array={allUsers}
           onPress={item => {
-            setnameModal(true), setSelectedItem(item);
+            {
+              setnameModal(true), setSelectedItem(item);
+            }
           }}
           onPressCancel={() => setopenGropModal(false)}
           selectedItems={[]}
@@ -553,18 +572,18 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: Colors.blue,
+    backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   chatList: {
-    width: '90%',
+    width: '100%',
     height: hp(10),
-    borderRadius: 10,
+    // borderRadius: 10,
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: Colors.placeColor,
-    margin: 10,
+    // backgroundColor: Colors.white,
+    // margin: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,

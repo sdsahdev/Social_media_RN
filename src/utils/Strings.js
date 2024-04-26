@@ -80,4 +80,7 @@ export const ImagePath = {
   adduser: require('../Images/invite.png'),
   leave: require('../Images/logout.png'),
   blurBg: require('../Images/Blur.jpeg'),
+  back: require('../Images/back.png'),
+  logout2: require('../Images/logout2.png'),
+  slimuser: require('../Images/slimuser.png'),
 };

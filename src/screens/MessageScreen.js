@@ -39,6 +39,7 @@ import {
 } from '../redux/Slice/MessageSlice';
 import ChatDetails from './ChatDetails';
 import FastImage from 'react-native-fast-image';
+import moment from 'moment';
 
 const MessageScreen = ({navigation}) => {
   const rotes = useRoute();
@@ -230,7 +231,7 @@ const MessageScreen = ({navigation}) => {
       {
         flex: 1,
         flexWrap: 'wrap',
-        color: toggle ? Colors.white : Colors.blue,
+        color: toggle ? Colors.black : Colors.black,
         textAlign: toggle ? 'right' : 'left',
         alignSelf: 'flex-start',
       },
@@ -238,9 +239,11 @@ const MessageScreen = ({navigation}) => {
     const textStylesdate = [
       {
         textAlign: toggle ? 'right' : 'left',
-        color: Colors.black,
+        color: Colors.white,
+        margin: 4,
       },
     ];
+    const formattedDate = moment(data?.createdAt).format('HH:mm DD-MM-YYYY');
 
     return (
       <View style={{paddingHorizontal: 2, flexDirection: 'column'}}>
@@ -266,7 +269,7 @@ const MessageScreen = ({navigation}) => {
             <View style={chatContainerStyle}>
               <Text style={textStyle}>{data?.content}</Text>
             </View>
-            <Text style={textStylesdate}>{data?.createdAt}</Text>
+            <Text style={textStylesdate}>{formattedDate}</Text>
           </>
         )}
       </View>
@@ -289,22 +292,33 @@ const MessageScreen = ({navigation}) => {
     }, 2000);
   };
   return (
-    <View style={{flex: 1}} behavior="padding">
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(RoutesName.ChatDetails, {data: chatDeatils});
-        }}
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 10,
-          borderBottomWidth: 2,
-        }}>
-        <Text style={{fontSize: 20}}>{chatDeatils?.name}</Text>
-      </TouchableOpacity>
-      {/* <TouchableOpacity>
-        <Image source={ImagePath.callicon} style={{width: 24, height: 24}} />
-      </TouchableOpacity> */}
+    <View style={{flex: 1, backgroundColor: Colors.black}} behavior="padding">
+      <View
+        style={[
+          {
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: 10,
+            backgroundColor: Colors.black2,
+          },
+        ]}>
+        <TouchableOpacity onPress={() => navigation.pop()}>
+          <FastImage
+            source={ImagePath.back}
+            style={{tintColor: Colors.white, width: wp(5), height: wp(5)}}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(RoutesName.ChatDetails, {data: chatDeatils});
+          }}>
+          <Text style={{color: Colors.white, fontSize: wp(5), margin: 4}}>
+            {chatDeatils?.name}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         ref={bottom}
         data={chats}
@@ -359,31 +373,28 @@ const MessageScreen = ({navigation}) => {
           style={styles.input}
           placeholder="Type messgae here ..."
           value={messgae}
+          placeholderTextColor={Colors.white}
           onChangeText={txt => onchangemsg(txt)}
         />
-
-        <TouchableOpacity
-          style={{backgroundColor: 'red', padding: 4}}
-          onPress={() =>
-            navigation.navigate(RoutesName.GallaryScreen, {id: msgid})
-          }>
-          <Image
-            source={ImagePath.gallaryicon}
-            style={{width: 24, height: 24}}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => sendMessage()}
-          disabled={messgae == '' ? true : false}
-          style={[
-            styles.postbtn,
-            {
-              backgroundColor: messgae == '' ? Colors.blue : Colors.dark_theme3,
-            },
-          ]}>
-          <Text style={styles.btntxt}> send</Text>
-        </TouchableOpacity>
+        {messgae.trim() == '' ? (
+          <TouchableOpacity
+            style={{padding: 4}}
+            onPress={() =>
+              navigation.navigate(RoutesName.GallaryScreen, {id: msgid})
+            }>
+            <FastImage
+              source={ImagePath.gallaryicon}
+              style={{width: 24, height: 24, tintColor: Colors.white}}
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => sendMessage()}
+            disabled={messgae == '' ? true : false}
+            style={[styles.postbtn]}>
+            <Text style={styles.btntxt}> send</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -398,35 +409,37 @@ const styles = StyleSheet.create({
   },
   postbtn: {
     width: '20%',
-    backgroundColor: Colors.dark_theme2,
+    backgroundColor: Colors.white,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
   },
   btntxt: {
-    color: Colors.white,
+    color: Colors.black,
   },
   input: {
     width: '70%',
     height: '100%',
+    color: Colors.white,
   },
   bottomview: {
-    width: '100%',
+    width: '96%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignSelf: 'center',
     alignItems: 'center',
-    padding: hp(2),
-    borderColor: Colors.blue,
-    borderWidth: 2,
-    borderRadius: 10,
+    borderWidth: 1,
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    margin: 10,
+    borderColor: Colors.white,
   },
   chatcontanertrue: {
     flex: 1,
     flexWrap: 'wrap',
     alignSelf: 'baseline',
-    borderColor: Colors.dark_theme3,
+    borderColor: Colors.white,
     borderWidth: 2,
     padding: 10,
     borderRadius: 30,
@@ -434,13 +447,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 0,
     alignSelf: 'flex-end',
-    backgroundColor: Colors.blue,
+    backgroundColor: Colors.white,
   },
   chatcontanerflase: {
     flex: 1,
     flexWrap: 'wrap',
     alignSelf: 'baseline',
-    borderColor: Colors.dark_theme3,
+    borderColor: Colors.white,
     borderWidth: 2,
     padding: 10,
     borderRadius: 30,
@@ -449,49 +462,5 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     alignSelf: 'flex-start',
     backgroundColor: Colors.white,
-  },
-  rightArrow: {
-    position: 'absolute',
-    backgroundColor: '#0078fe',
-    //backgroundColor:"red",
-    width: 20,
-    height: 25,
-    bottom: 0,
-    borderBottomLeftRadius: 25,
-    right: -10,
-  },
-
-  rightArrowOverlap: {
-    position: 'absolute',
-    backgroundColor: Colors.white,
-    //backgroundColor:"green",
-    width: 20,
-    height: 35,
-    bottom: -6,
-    borderBottomLeftRadius: 18,
-    right: -20,
-  },
-
-  /*Arrow head for recevied messages*/
-  leftArrow: {
-    position: 'absolute',
-    backgroundColor: '#dedede',
-    //backgroundColor:"red",
-    width: 20,
-    height: 25,
-    bottom: 0,
-    borderBottomRightRadius: 25,
-    left: -10,
-  },
-
-  leftArrowOverlap: {
-    position: 'absolute',
-    backgroundColor: '#eeeeee',
-    //backgroundColor:"green",
-    width: 20,
-    height: 35,
-    bottom: -6,
-    borderBottomRightRadius: 18,
-    left: -20,
   },
 });

@@ -221,7 +221,7 @@ const Home = ({navigation}) => {
               alignItems: 'center',
             },
           ]}>
-          <View style={styles.topView}>
+          <View style={[styles.topView]}>
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate(RoutesName.OtherProfile, {
@@ -244,7 +244,7 @@ const Home = ({navigation}) => {
                 </Text>
                 <Text
                   style={{color: Colors.white, fontFamily: 'Raleway-Regular'}}>
-                  User post created: <TimeAgo timestamp={item.createdAt} />
+                  <TimeAgo timestamp={item.createdAt} />
                 </Text>
               </View>
             </TouchableOpacity>
@@ -268,9 +268,11 @@ const Home = ({navigation}) => {
               </TouchableOpacity>
             )}
           </View>
-          <Text style={[styles.capttxt, {fontFamily: 'Raleway-Medium'}]}>
-            {item.caption}
-          </Text>
+          {item.caption && (
+            <Text style={[styles.capttxt, {fontFamily: 'Raleway-Medium'}]}>
+              {`description : ${item.caption}`}
+            </Text>
+          )}
           <TapGestureHandler
             maxDelayMs={250}
             numberOfTaps={2}
@@ -301,7 +303,7 @@ const Home = ({navigation}) => {
                       {
                         width: 100,
                         height: 100,
-                        tintColor: checkLike ? 'red' : Colors.white,
+                        tintColor: checkLike ? Colors.red : Colors.white,
                       },
                       animatedStle,
                     ]}
@@ -318,7 +320,10 @@ const Home = ({navigation}) => {
               style={styles.bottomLeft}>
               <Image
                 source={ImagePath.hearticon}
-                style={[styles.heart, {tintColor: checkLike ? 'red' : 'white'}]}
+                style={[
+                  styles.heart,
+                  {tintColor: checkLike ? Colors.red : 'white'},
+                ]}
               />
               <Text style={styles.captiontxt}>
                 {` ${item.likes.length} Likes`}
@@ -375,7 +380,7 @@ const Home = ({navigation}) => {
         }}
         style={{position: 'absolute', right: 10, top: 10}}>
         <Image
-          source={ImagePath.closeicon}
+          source={ImagePath.logout2}
           style={{width: 24, height: 24, tintColor: Colors.white}}
         />
       </TouchableOpacity>
@@ -401,7 +406,7 @@ const Home = ({navigation}) => {
         savedata={() => {
           setshowLogout(false);
           dispatch(logout());
-          navigation.navigate(RoutesName.Signup);
+          navigation.navigate(RoutesName.SigninOption);
         }}
         status={showLogout}
       />
@@ -414,13 +419,14 @@ export default Home;
 const styles = StyleSheet.create({
   followtxt: {color: Colors.white},
   follwobtn: {
-    height: hp(6),
     backgroundColor: Colors.black5,
-    paddingLeft: 15,
-    paddingRight: 15,
-    marginTop: 10,
     borderRadius: 10,
     justifyContent: 'center',
+    paddingHorizontal: 8,
+    height: wp(10),
+    width: wp(20),
+    alignItems: 'center',
+    alignSelf: 'center',
   },
   bottomLeft: {flexDirection: 'row'},
   heart: {width: 24, height: 24, tintColor: Colors.white},
@@ -438,23 +444,24 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   capttxt: {
-    width: '90%',
+    width: '100%',
     marginTop: 10,
     alignSelf: 'center',
     color: Colors.white,
+    marginLeft: 10,
   },
   usernameView: {
     margin: 4,
   },
   timestam: {fontSize: 10, color: Colors.placeColor},
   captiontxt: {
-    fontSize: 18,
+    fontSize: 15,
     textAlignVertical: 'center',
     color: Colors.white,
   },
   topView: {
     flexDirection: 'row',
-    width: '100%',
+    width: '90%',
     justifyContent: 'space-between',
     paddingRight: 15,
     paddingTop: 10,
@@ -468,7 +475,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 25,
-    marginLeft: 10,
   },
   absolute: {
     position: 'absolute',
@@ -479,11 +485,9 @@ const styles = StyleSheet.create({
   },
   feed: {
     width: '100%',
-    // backgroundColor: Colors.blackcombi,
-    marginTop: 10,
     borderRadius: 15,
     alignSelf: 'center',
-    paddingBottom: 20,
+    paddingVertical: 10,
     justifyContent: 'center',
   },
   container: {

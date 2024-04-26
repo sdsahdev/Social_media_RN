@@ -1,8 +1,9 @@
 export const Colors = {
   blue: '#2852BC',
   white: '#fff',
+  offwhite: 'rgba(203,203,203,0.5)',
   background: '#F5F5F5',
-  red: '#FF0000',
+  red: 'rgba(232,47,47,1)',
   sky: '#91c8f2',
   placeColor: '#a5a8a5',
   placeColor: '#9e9e9e',
