@@ -1,5 +1,5 @@
 import {io} from 'socket.io-client';
-import {LOCAL_HOST} from '../utils/Strings';
+import {Soket_Local} from '../utils/Strings';
 import {useMemo, createContext, useContext} from 'react';
 import {useSelector} from 'react-redux';
 
@@ -11,7 +11,7 @@ const SocketProvide = ({children}) => {
   const socket = useMemo(() => {
     if (token) {
       console.log(token, '====socket===');
-      return io(LOCAL_HOST, {
+      return io(Soket_Local, {
         auth: {
           token: token, // Pass the authentication token here
         },

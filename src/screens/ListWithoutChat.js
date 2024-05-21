@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {API_URLS, BASE_URL, ImagePath} from '../utils/Strings';
 import {Colors} from '../utils/Colors';
+import FastImage from 'react-native-fast-image';
 
 const ListWithoutChat = ({navigation}) => {
   const [loading, setloading] = useState(false);
@@ -86,13 +87,20 @@ const ListWithoutChat = ({navigation}) => {
   };
 
   const renderItem = ({item, index}) => {
+    console.log(item, '===items');
     return (
       <View style={styles.chatList}>
         <View style={styles.ImgView}>
-          <Image source={ImagePath.usericon} style={styles.imageprofile} />
+          <FastImage
+            tintColor={item.profilePic ? null : Colors.white}
+            source={
+              item.profilePic ? {uri: item.profilePic} : ImagePath.usericon
+            }
+            style={styles.imageprofile}
+          />
           <View style={{marginLeft: 10}}>
-            <Text>{item?.username}</Text>
-            <Text>{item?.gender}</Text>
+            <Text style={{color: Colors.white}}>{item?.username}</Text>
+            <Text style={{color: Colors.white}}>{item?.gender}</Text>
           </View>
         </View>
         <TouchableOpacity
@@ -100,13 +108,13 @@ const ListWithoutChat = ({navigation}) => {
             createPersonalChat(item?._id);
           }}
           style={styles.chatbtn}>
-          <Text>Chat</Text>
+          <Text style={{color: Colors.white}}>Chat</Text>
         </TouchableOpacity>
       </View>
     );
   };
   return (
-    <View>
+    <View style={{backgroundColor: Colors.black, flex: 1}}>
       <FlatList
         data={allUsers}
         renderItem={(item, index) => renderItem(item, index)}
@@ -122,23 +130,21 @@ const styles = StyleSheet.create({
   chatbtn: {
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: Colors.black,
+    borderColor: Colors.white,
     paddingHorizontal: wp(4),
     paddingVertical: hp(1),
   },
   imageprofile: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: hp(7),
+    height: hp(7),
+    borderRadius: hp(3.5),
   },
   chatList: {
-    width: '90%',
+    width: '100%',
     height: hp(10),
     borderRadius: 10,
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: Colors.placeColor,
-    margin: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,

@@ -15,7 +15,11 @@ import {useSelector} from 'react-redux';
 import Loader from '../components/Loader';
 import {Colors} from '../utils/Colors';
 import {API_URLS, BASE_URL, ImagePath} from '../utils/Strings';
-import {heightPercentageToDP} from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
+import FastImage from 'react-native-fast-image';
 
 const UploadPost = ({navigation}) => {
   const reference = storage().ref('black-t-shirt-sm.png');
@@ -49,14 +53,14 @@ const UploadPost = ({navigation}) => {
     axios
       .post(BASE_URL + API_URLS.ADD_POST_URL, body, myHeader)
       .then(res => {
-        setloading(false);
         console.log(res, '====res====');
         navigation.navigate('Home');
       })
       .catch(err => {
-        setloading(false);
-
         console.log(err, '====error====');
+      })
+      .finally(() => {
+        setloading(false), setCaption(''), setImagedata(null);
       });
   };
 
@@ -159,9 +163,13 @@ const UploadPost = ({navigation}) => {
           <TouchableOpacity
             onPress={() => setImagedata(null)}
             style={styles.removebtn}>
-            <Image
+            <FastImage
+              tintColor={Colors.black}
               source={ImagePath.closeicon}
-              style={[styles.camera, {width: 20, height: 20}]}
+              style={[
+                styles.camera,
+                {width: widthPercentageToDP(5), height: widthPercentageToDP(5)},
+              ]}
             />
           </TouchableOpacity>
         </View>
@@ -204,7 +212,8 @@ export default UploadPost;
 const styles = StyleSheet.create({
   posttxt: {
     fontSize: 18,
-    color: Colors.white,
+    color: Colors.black,
+    fontWeight: 'bold',
   },
   postbtn: {
     width: '90%',
@@ -216,14 +225,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   removebtn: {
-    width: 40,
-    height: 40,
+    width: widthPercentageToDP(9),
+    height: widthPercentageToDP(9),
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
     top: 10,
-    right: 10,
+    right: 20,
     borderRadius: 20,
   },
   imagestyle: {

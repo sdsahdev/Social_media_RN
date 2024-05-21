@@ -39,8 +39,8 @@ const GallaryScreen = ({navigation}) => {
     hasAndroidPermission();
     openCameraRoll();
   }, []);
-  const socket = getSocket();
 
+  const socket = getSocket();
   const rotes = useRoute();
   const chatId = rotes.params.id;
   const [gallaryList, setgallaryList] = useState([]);
@@ -96,7 +96,18 @@ const GallaryScreen = ({navigation}) => {
 
     return await getRequestPermissionPromise();
   }
+  useEffect(() => {
+    openCameraRoll();
+  }, [page]);
+  const handleEndReached = () => {
+    if (!loading) {
+      console.log(page, '==handleEndReached==');
+      setPage(page + 1);
+    }
+  };
+
   const openCameraRoll = () => {
+    console.log(page, '==openCameraRoll==');
     CameraRoll.getPhotos({
       first: pageSize * page,
       assetType: 'Photos',
@@ -108,10 +119,7 @@ const GallaryScreen = ({navigation}) => {
         console.log(err);
       });
   };
-  const handleEndReached = () => {
-    setPage(page + 1); // Increment page when end of list is reached
-    openCameraRoll(); // Fetch more images
-  };
+
   const sendImage = () => {
     setloading(true);
     const formData = new FormData();
@@ -144,7 +152,7 @@ const GallaryScreen = ({navigation}) => {
         showMessage({
           message: 'Try again later. Something went wrong.',
           type: 'danger',
-          backgroundColor: 'red',
+          backgroundColor: Colors.black,
           icon: 'danger',
           color: '#fff',
         });
@@ -221,13 +229,19 @@ const GallaryScreen = ({navigation}) => {
     );
   };
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.black,
+      }}>
       <Loader visible={loading} />
       <FlatList
         data={gallaryList}
         numColumns={3}
         contentContainerStyle={{
-          backgroundColor: 'red',
+          backgroundColor: Colors.black,
           marginVertical: 2,
         }}
         renderItem={(item, index) => renderItem(item, index)}
@@ -236,7 +250,7 @@ const GallaryScreen = ({navigation}) => {
         onEndReachedThreshold={0.1}
         ListFooterComponent={() => {
           {
-            <View style={[]}>
+            <View style={{margin: 20}}>
               <ActivityIndicator size="large" color={Colors.black} />
             </View>;
           }
@@ -248,13 +262,15 @@ const GallaryScreen = ({navigation}) => {
           position: 'absolute',
           width: '90%',
           height: hp(8),
-          backgroundColor: Colors.dark_theme2,
+          backgroundColor: Colors.white,
           borderRadius: 10,
           alignItems: 'center',
           justifyContent: 'center',
           bottom: hp(2),
+          borderWidth: 2,
+          borderColor: Colors.black,
         }}>
-        <Text style={{color: Colors.white, fontSize: 16}}>Send</Text>
+        <Text style={{color: Colors.black, fontSize: 16}}>Send</Text>
       </TouchableOpacity>
     </View>
   );

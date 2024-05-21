@@ -38,8 +38,9 @@ import {
   setNewMessageAlert,
 } from '../redux/Slice/MessageSlice';
 import {showMessage} from 'react-native-flash-message';
+import FastImage from 'react-native-fast-image';
 
-const ChatDetails = () => {
+const ChatDetails = ({navigation}) => {
   const rotes = useRoute();
   const data = rotes.params.data;
   const textInputRef = useRef(null);
@@ -68,7 +69,6 @@ const ChatDetails = () => {
       .finally(() => console.log('finnallty'));
   };
   const edit_gropname = () => {
-    setloading(true);
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
     try {
@@ -80,13 +80,13 @@ const ChatDetails = () => {
       axios
         .post(BASE_URL + API_URLS.RENAME_GROUP, body, myHeader)
         .then(response => {
-          setloading(false);
-          console.log(response.data, '==response delete====='),
-            setloading(false);
+          console.log(response.data, '==response Rename=====');
         })
         .catch(error => {
-          setloading(false);
-          console.log(error, '=====error delete==='), setloading(false);
+          console.log(error, '=====error Rename===');
+        })
+        .finally(() => {
+          setisRename(!isRename), setloading(false);
         });
     } catch (e) {
       setloading(false);
@@ -108,12 +108,9 @@ const ChatDetails = () => {
           myHeader,
         )
         .then(response => {
-          setloading(false);
-          console.log(response.data, '==response delete====='),
-            setloading(false);
+          console.log(response.data, '==response delete=====');
         })
         .catch(error => {
-          setloading(false);
           showMessage({
             message: error?.response?.data?.error
               ? error?.response?.data?.error
@@ -123,6 +120,8 @@ const ChatDetails = () => {
             icon: 'danger',
             color: '#fff',
           });
+        })
+        .finally(() => {
           setloading(false);
         });
     } catch (e) {
@@ -136,7 +135,6 @@ const ChatDetails = () => {
         style={{
           marginBottom: 10,
           padding: 10,
-          backgroundColor: Colors.white,
           borderRadius: 10,
           flexDirection: 'row',
           alignItems: 'center',
@@ -144,8 +142,13 @@ const ChatDetails = () => {
           justifyContent: 'space-between',
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image source={ImagePath.usericon} style={styles.imageprofile} />
-          <Text style={{fontSize: 15, marginHorizontal: 10}}>
+          <FastImage
+            tintColor={Colors.white}
+            source={ImagePath.usericon}
+            style={styles.imageprofile}
+          />
+          <Text
+            style={{fontSize: 15, marginHorizontal: 10, color: Colors.white}}>
             {item.username}
           </Text>
         </View>
@@ -162,9 +165,18 @@ const ChatDetails = () => {
   };
 
   return (
-    <View style={{flex: 1, alignItems: 'center'}}>
+    <View style={{flex: 1, backgroundColor: Colors.black}}>
+      <TouchableOpacity onPress={() => navigation.pop()}>
+        <FastImage
+          source={ImagePath.back}
+          tintColor={Colors.white}
+          style={{width: wp(5), height: wp(5), margin: 15}}
+        />
+      </TouchableOpacity>
+
       <View style={{marginTop: hp(10), alignItems: 'center'}}>
-        <Image
+        <FastImage
+          tintColor={Colors.white}
           style={{
             width: 60,
             height: 60,
@@ -173,12 +185,15 @@ const ChatDetails = () => {
           source={ImagePath.usericon}
         />
         {isRename == false ? (
-          <Text style={{fontSize: 20}}>{chatDeatils?.name}</Text>
+          <Text style={{fontSize: 20, color: Colors.white}}>
+            {chatDeatils?.name}
+          </Text>
         ) : (
           <>
             <TextInput
+              placeholderTextColor={Colors.white}
               ref={textInputRef}
-              style={{fontSize: 20, color: Colors.black}}
+              style={{fontSize: 20, color: Colors.white}}
               placeholder={'Enter Name'}
               value={editName}
               autoFocus={true}
@@ -189,10 +204,10 @@ const ChatDetails = () => {
               style={{
                 padding: 8,
                 borderWidth: 1,
-                borderColor: Colors.black,
+                borderColor: Colors.white,
                 borderRadius: 8,
               }}>
-              <Text>Update Name </Text>
+              <Text style={{color: Colors.white}}>Update Name </Text>
             </TouchableOpacity>
           </>
         )}
@@ -204,10 +219,12 @@ const ChatDetails = () => {
           justifyContent: 'space-evenly',
           width: '100%',
           marginTop: hp(5),
+          alignItems: 'center',
         }}>
         <TouchableOpacity
           style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Image
+          <FastImage
+            tintColor={Colors.white}
             style={{
               width: 25,
               height: 25,
@@ -215,7 +232,7 @@ const ChatDetails = () => {
             }}
             source={ImagePath.adduser}
           />
-          <Text style={{fontSize: 12, color: Colors.black, marginTop: hp(2)}}>
+          <Text style={{fontSize: 12, color: Colors.white, marginTop: hp(2)}}>
             Add
           </Text>
         </TouchableOpacity>
@@ -226,7 +243,8 @@ const ChatDetails = () => {
               textInputRef.current && textInputRef.current.focus();
           }}
           style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Image
+          <FastImage
+            tintColor={Colors.white}
             style={{
               width: 25,
               height: 25,
@@ -234,7 +252,7 @@ const ChatDetails = () => {
             }}
             source={ImagePath.editicon}
           />
-          <Text style={{fontSize: 12, color: Colors.black, marginTop: hp(2)}}>
+          <Text style={{fontSize: 12, color: Colors.white, marginTop: hp(2)}}>
             Rename
           </Text>
         </TouchableOpacity>
@@ -243,7 +261,8 @@ const ChatDetails = () => {
             leaveGroup();
           }}
           style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Image
+          <FastImage
+            tintColor={Colors.white}
             style={{
               width: 25,
               height: 25,
@@ -251,13 +270,19 @@ const ChatDetails = () => {
             }}
             source={ImagePath.leave}
           />
-          <Text style={{fontSize: 12, color: Colors.black, marginTop: hp(2)}}>
+          <Text style={{fontSize: 12, color: Colors.white, marginTop: hp(2)}}>
             Leave
           </Text>
         </TouchableOpacity>
       </View>
       {console.log(chatDeatils, '==data,')}
-      <Text style={{fontSize: 15, color: Colors.black, marginTop: hp(2)}}>
+      <Text
+        style={{
+          fontSize: 15,
+          color: Colors.white,
+          marginTop: hp(2),
+          alignSelf: 'center',
+        }}>
         Members
       </Text>
       <FlatList
@@ -274,8 +299,9 @@ export default ChatDetails;
 
 const styles = StyleSheet.create({
   imageprofile: {
-    width: 50,
-    height: 50,
+    width: 35,
+    height: 35,
     borderRadius: 25,
+    color: Colors.white,
   },
 });

@@ -79,13 +79,13 @@ const Login = ({navigation, onClicks, onGoregister}) => {
       .then(response => response.json())
       .then(responseData => {
         setLoading(false);
-        showMessage({
-          message: responseData?.message,
-          type: responseData.status ? 'success' : 'danger',
-          backgroundColor: responseData.status ? 'green' : 'red', // background color
-          icon: responseData.status ? 'success' : 'danger', // background color
-          color: '#fff', // text color
-        });
+        // showMessage({
+        //   message: responseData?.message,
+        //   type: responseData.status ? 'success' : 'danger',
+        //   backgroundColor: responseData.status ? 'green' : 'red', // background color
+        //   icon: responseData.status ? 'success' : 'danger', // background color
+        //   color: '#fff', // text color
+        // });
         console.log(responseData);
         if (responseData.status) {
           dispatch(setAuthdata(responseData));

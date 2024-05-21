@@ -305,11 +305,13 @@ const MessageScreen = ({navigation}) => {
         <TouchableOpacity onPress={() => navigation.pop()}>
           <FastImage
             source={ImagePath.back}
-            style={{tintColor: Colors.white, width: wp(5), height: wp(5)}}
+            tintColor={Colors.white}
+            style={{width: wp(5), height: wp(5)}}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
+          style={{marginLeft: 10}}
           onPress={() => {
             navigation.navigate(RoutesName.ChatDetails, {data: chatDeatils});
           }}>
@@ -384,6 +386,7 @@ const MessageScreen = ({navigation}) => {
             }>
             <FastImage
               source={ImagePath.gallaryicon}
+              tintColor={Colors.white}
               style={{width: 24, height: 24, tintColor: Colors.white}}
             />
           </TouchableOpacity>

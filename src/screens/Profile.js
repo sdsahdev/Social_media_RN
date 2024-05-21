@@ -342,9 +342,7 @@ const Profile = ({navigation}) => {
             </View>
             <View style={styles.countView}>
               <Text style={styles.values}>
-                {profileData.follower?.length
-                  ? profileData?.follower?.length
-                  : 0}
+                {postdata?.length ? postdata?.length : 0}
               </Text>
               <Text style={styles.titel}>Posts</Text>
             </View>

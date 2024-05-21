@@ -1,27 +1,28 @@
-import { useIsFocused, useRoute } from '@react-navigation/native'; // Import the hook
+import {useIsFocused, useRoute} from '@react-navigation/native'; // Import the hook
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    FlatList,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Image } from 'react-native-animatable';
+import {Image} from 'react-native-animatable';
 import {
-    heightPercentageToDP,
-    heightPercentageToDP as hp,
-    widthPercentageToDP as wp,
+  heightPercentageToDP,
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import EditCapsion from '../components/EditCapsion';
 import Loader from '../components/Loader';
 import OptionModal from '../components/OptionModal';
 import TimeAgo from '../components/TimeAgo';
-import { Colors } from '../utils/Colors';
-import { API_URLS, BASE_URL, ImagePath, RoutesName } from '../utils/Strings';
+import {Colors} from '../utils/Colors';
+import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
+import FastImage from 'react-native-fast-image';
 const OtherProfile = ({navigation}) => {
   const auth = useSelector(state => state.auth);
   const rotes = useRoute();
@@ -179,8 +180,8 @@ const OtherProfile = ({navigation}) => {
             <Image source={ImagePath.usericon} style={styles.profile} />
             <View style={styles.usernameView}>
               <Text style={styles.captiontxt}>{item.username}</Text>
-              <Text>
-                User post created: <TimeAgo timestamp={item.createdAt} />
+              <Text style={{color: Colors.white}}>
+                <TimeAgo timestamp={item.createdAt} />
               </Text>
             </View>
           </View>
@@ -214,18 +215,27 @@ const OtherProfile = ({navigation}) => {
             style={styles.bottomLeft}>
             <Image
               source={ImagePath.hearticon}
-              style={[styles.heart, {tintColor: checkLike ? 'red' : 'black'}]}
+              style={[
+                styles.heart,
+                {tintColor: checkLike ? Colors.red : Colors.white},
+              ]}
             />
-            <Text style={styles.captiontxt}>{item.likes.length} Likes</Text>
+            <Text style={styles.captiontxt}>
+              {` ${item.likes.length} Likes`}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate(RoutesName.Comment, {id: item._id});
             }}
             style={styles.bottomLeft}>
-            <Image source={ImagePath.chaticon} style={styles.heart} />
+            <FastImage
+              tintColor={Colors.white}
+              source={ImagePath.chaticon}
+              style={styles.heart}
+            />
             <Text style={styles.captiontxt}>
-              {item.comments.length ? item.comments.length : 0} comments
+              {` ${item.comments.length ? item.comments.length : 0} comments`}
             </Text>
           </TouchableOpacity>
         </View>
@@ -234,101 +244,129 @@ const OtherProfile = ({navigation}) => {
   };
 
   return (
-    <ScrollView
-      nestedScrollEnabledm
+    <FlatList
+      nestedScrollEnabled
       showsVerticalScrollIndicator={false}
-      style={styles.container}>
-      <Loader visible={loading} />
-      <OptionModal
-        visible={openOpsion}
-        onClick={x => {
-          setopenOpsion(false);
-          if (x == 2) {
-            console.log('delete called');
-            deletePost();
-          } else {
-            setopenEditM(true);
-          }
-        }}
-        onClose={() => {
-          setopenOpsion(false);
-        }}
-      />
-      <EditCapsion
-        data={selectedItem}
-        visible={openEditM}
-        onClick={x => {
-          setopenEditM(false), updatePost(x);
-        }}
-        onClose={() => setopenEditM(false)}
-      />
-      <View style={styles.coverAre}>
-        {profileData.coverPic != null && profileData.coverPic != '' ? (
-          <Image
-            source={{uri: profileData.coverPic}}
-            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
-          />
-        ) : null}
-      </View>
+      style={styles.container}
+      ListHeaderComponent={() => (
+        <>
+          <Loader visible={loading} />
 
-      <View style={styles.profileView}>
-        {profileData?.profilePic != '' ? (
-          <Image
-            source={{uri: profileData?.profilePic}}
-            style={[styles.profileView, {marginTop: 0, marginLeft: 0}]}
+          <OptionModal
+            visible={openOpsion}
+            onClick={x => {
+              setopenOpsion(false);
+              if (x == 2) {
+                console.log('delete called');
+                deletePost();
+              } else {
+                setopenEditM(true);
+              }
+            }}
+            onClose={() => {
+              setopenOpsion(false);
+            }}
           />
-        ) : (
-          <>
-            <Image source={ImagePath.usericon} style={styles.imaview} />
-          </>
-        )}
-      </View>
+          <EditCapsion
+            data={selectedItem}
+            visible={openEditM}
+            onClick={x => {
+              setopenEditM(false), updatePost(x);
+            }}
+            onClose={() => setopenEditM(false)}
+          />
+          <View style={styles.coverAre}>
+            {profileData.coverPic != null && profileData.coverPic != '' ? (
+              <FastImage
+                source={{uri: profileData.coverPic}}
+                style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+              />
+            ) : null}
+          </View>
 
-      <Text style={styles.useRName}>
-        {profileData ? profileData?.username : ''}
-      </Text>
-      <Text style={styles.emails}>{profileData ? profileData?.email : ''}</Text>
-      <View style={styles.follwview}>
-        <View style={styles.countView}>
-          <Text style={styles.values}>
-            {profileData.follower?.length ? profileData?.follower?.length : 0}
+          <View style={styles.profileView}>
+            {profileData?.profilePic != '' ? (
+              <FastImage
+                source={{uri: profileData?.profilePic}}
+                style={[styles.profileView, {marginTop: 0, marginLeft: 0}]}
+              />
+            ) : (
+              <>
+                <FastImage
+                  tintColor={Colors.white}
+                  source={ImagePath.usericon}
+                  style={styles.imaview}
+                />
+              </>
+            )}
+          </View>
+
+          <Text style={styles.useRName}>
+            {profileData ? profileData?.username : ''}
           </Text>
-          <Text style={styles.titel}>Followers</Text>
-        </View>
-        <View style={styles.countView}>
-          <Text style={styles.values}>
-            {profileData.following?.length ? profileData?.following?.length : 0}
+          <Text style={styles.emails}>
+            {profileData ? profileData?.email : ''}
           </Text>
-          <Text style={styles.titel}>Following</Text>
-        </View>
-        <View style={styles.countView}>
-          <Text style={styles.values}>
-            {profileData.follower?.length ? profileData?.follower?.length : 0}
-          </Text>
-          <Text style={styles.titel}>Posts</Text>
-        </View>
-      </View>
-      {auth.data != null && auth?.data?.data._id == otheruserid ? (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate(RoutesName.EditProfile, {data: profileData});
-          }}
-          style={styles.editBtn}>
-          <Text style={styles.edittx}>Edit Profile</Text>
-        </TouchableOpacity>
-      ) : null}
-      <FlatList
-        data={postdata}
-        renderItem={(item, index) => renderItem(item, index)}
-        showsVerticalScrollIndicator={false}
-      />
-    </ScrollView>
+          <View style={styles.follwview}>
+            <View style={styles.countView}>
+              <Text style={styles.values}>
+                {profileData.follower?.length
+                  ? profileData?.follower?.length
+                  : 0}
+              </Text>
+              <Text style={styles.titel}>Followers</Text>
+            </View>
+            <View style={styles.countView}>
+              <Text style={styles.values}>
+                {profileData.following?.length
+                  ? profileData?.following?.length
+                  : 0}
+              </Text>
+              <Text style={styles.titel}>Following</Text>
+            </View>
+            <View style={styles.countView}>
+              <Text style={styles.values}>
+                {postdata?.length ? postdata?.length : 0}
+              </Text>
+              <Text style={styles.titel}>Posts</Text>
+            </View>
+          </View>
+          {auth.data != null && auth?.data?.data._id == otheruserid ? (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(RoutesName.EditProfile, {
+                  data: profileData,
+                });
+              }}
+              style={styles.editBtn}>
+              <Text style={styles.edittx}>Edit Profile</Text>
+            </TouchableOpacity>
+          ) : null}
+          <TouchableOpacity
+            style={styles.backbtn}
+            onPress={() => navigation.pop()}>
+            <FastImage
+              source={ImagePath.back}
+              tintColor={Colors.white}
+              style={{width: wp(5), height: wp(5), margin: 7}}
+            />
+          </TouchableOpacity>
+        </>
+      )}
+      data={postdata}
+      renderItem={(item, index) => renderItem(item, index)}
+    />
   );
 };
 
 export default OtherProfile;
-
 const styles = StyleSheet.create({
+  backbtn: {
+    position: 'absolute',
+    backgroundColor: Colors.black,
+    borderRadius: 10,
+    margin: 15,
+  },
   profilebtn: {
     width: '100%',
     height: '100%',
@@ -336,10 +374,15 @@ const styles = StyleSheet.create({
   coverAre: {
     width: '100%',
     height: 150,
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.black2,
   },
-  values: {fontSize: 25, fontWeight: '600', color: Colors.black},
-  titel: {fontSize: 16, marginTop: 5, color: Colors.black},
+  values: {fontSize: 25, fontWeight: '600', color: Colors.white},
+  titel: {
+    fontSize: 15,
+    color: Colors.white,
+    fontWeight: 'bold',
+    marginLeft: wp(2),
+  },
   countView: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -353,7 +396,7 @@ const styles = StyleSheet.create({
   },
   edittx: {
     fontSize: 18,
-    color: Colors.black,
+    color: Colors.white,
     alignSelf: 'center',
     padding: 10,
   },
@@ -366,18 +409,19 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
+    borderColor: Colors.white,
   },
   useRName: {
     fontSize: 25,
     marginTop: 10,
     fontWeight: '500',
-    color: Colors.black,
+    color: Colors.white,
     marginLeft: 20,
   },
   emails: {
     fontSize: 18,
     marginLeft: 20,
-    color: Colors.black,
+    color: Colors.white,
     width: '90%',
     fontWeight: '400',
   },
@@ -387,19 +431,19 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.placeColor,
+    backgroundColor: Colors.black2,
     marginTop: -50,
     marginLeft: 10,
   },
   imaview: {width: 50, height: 50, tintColor: Colors.white},
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.black,
   },
-  followtxt: {color: Colors.white},
+  followtxt: {color: Colors.black},
   follwobtn: {
     height: hp(6),
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.white,
     paddingLeft: 15,
     paddingRight: 15,
     marginTop: 10,
@@ -416,7 +460,7 @@ const styles = StyleSheet.create({
     margin: hp(2),
   },
   imagePost: {
-    width: '90%',
+    width: '100%',
     height: 200,
     resizeMode: 'contain',
     marginTop: 10,
@@ -425,15 +469,16 @@ const styles = StyleSheet.create({
     width: '90%',
     marginTop: 10,
     alignSelf: 'center',
+    color: Colors.white,
   },
   usernameView: {
     margin: 4,
   },
-  timestam: {fontSize: 10, color: Colors.placeColor},
+  timestam: {fontSize: 10, color: Colors.white},
   captiontxt: {
     fontSize: 18,
     textAlignVertical: 'center',
-    color: Colors.placeColor,
+    color: Colors.white,
   },
   topView: {
     flexDirection: 'row',
@@ -449,7 +494,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 25,
-    tintColor: Colors.placeColor,
+    tintColor: Colors.white,
     marginLeft: 10,
   },
   absolute: {
@@ -461,115 +506,10 @@ const styles = StyleSheet.create({
   },
   feed: {
     width: '90%',
-    backgroundColor: Colors.background,
     marginTop: 20,
     borderRadius: 15,
     alignSelf: 'center',
     paddingBottom: 20,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  titel: {
-    fontSize: 28,
-    color: Colors.dark_theme2,
-    fontWeight: 'bold',
-    marginLeft: wp(2),
-  },
-  bottomnav: {
-    width: '100%',
-    height: hp(10),
-    position: 'absolute',
-    bottom: 10,
-    backgroundColor: '#f2f2f2',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-  },
-  bottamTab: {
-    width: '25%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  followtxt: {color: Colors.white},
-  follwobtn: {
-    height: hp(6),
-    backgroundColor: Colors.dark_theme3,
-    paddingLeft: 15,
-    paddingRight: 15,
-    marginTop: 10,
-    borderRadius: 10,
-    justifyContent: 'center',
-  },
-  bottomLeft: {flexDirection: 'row'},
-  heart: {width: 24, height: 24},
-  bottomView: {
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    margin: hp(2),
-  },
-  imagePost: {
-    width: '90%',
-    height: 200,
-    resizeMode: 'contain',
-    marginTop: 10,
-  },
-  capttxt: {
-    width: '90%',
-    marginTop: 10,
-    alignSelf: 'center',
-  },
-  usernameView: {
-    margin: 4,
-  },
-  timestam: {fontSize: 10, color: Colors.placeColor},
-  captiontxt: {
-    fontSize: 18,
-    textAlignVertical: 'center',
-    color: Colors.placeColor,
-  },
-  topView: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingRight: 15,
-    paddingTop: 10,
-  },
-  topLeft: {
-    flexDirection: 'row',
-  },
-  profile: {
-    width: 40,
-    height: 40,
-    borderRadius: 25,
-    tintColor: Colors.placeColor,
-    marginLeft: 10,
-  },
-  absolute: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-  },
-  feed: {
-    width: '90%',
-    backgroundColor: Colors.background,
-    marginTop: 20,
-    borderRadius: 15,
-    alignSelf: 'center',
-    paddingBottom: 20,
-  },
-
-  titel: {
-    fontSize: 28,
-    color: Colors.dark_theme2,
-    fontWeight: 'bold',
-    marginLeft: wp(2),
   },
   bottomnav: {
     width: '100%',

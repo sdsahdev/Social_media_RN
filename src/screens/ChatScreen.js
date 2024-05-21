@@ -207,6 +207,7 @@ const ChatScreen = ({navigation}) => {
       console.error(`Swipeable ref at index ${index} is null.`);
     }
   };
+
   function DeleteChatApi(id, index) {
     setloading(true);
     const myHeader = new Headers();

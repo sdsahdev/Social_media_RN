@@ -252,7 +252,7 @@ const Signup = ({navigation, onClicks}) => {
                   styles.button,
                   {justifyContent: 'center', alignItems: 'center', margin: 0},
                 ]}>
-                <Text style={styles.btntxt}>Login</Text>
+                <Text style={styles.btntxt}>Sign Up</Text>
               </TouchableOpacity>
             </LinearGradient>
           </View>
@@ -262,7 +262,7 @@ const Signup = ({navigation, onClicks}) => {
               onClicks();
             }}
             style={{flex: 1, marginBottom: 10}}>
-            <Text style={{color: Colors.white, fontSize: 16}}> Go Back</Text>
+            <Text style={{color: Colors.white, fontSize: 16}}>Go Back</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -1,6 +1,8 @@
-export const LOCAL_HOST = 'http://192.168.29.140:8200';
-export const BASE_URL = `${LOCAL_HOST}/socialapp/api`;
-// export const BASE_URL = "https://social-media-backend-wkdd.onrender.com/socialapp/api";
+// export const LOCAL_HOST = 'http://127.0.0.1:8200';
+// export const BASE_URL = `${LOCAL_HOST}/socialapp/api`;
+export const BASE_URL =
+  'https://social-media-backend-wkdd.onrender.com/socialapp/api';
+export const Soket_Local = 'https://social-media-backend-wkdd.onrender.com';
 export const API_URLS = {
   LOGIN_URL: '/auth/login',
   REGISTER_URL: '/auth/register',

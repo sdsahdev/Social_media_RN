@@ -270,7 +270,7 @@ const Home = ({navigation}) => {
           </View>
           {item.caption && (
             <Text style={[styles.capttxt, {fontFamily: 'Raleway-Medium'}]}>
-              {`description : ${item.caption}`}
+              {`Description : ${item.caption}`}
             </Text>
           )}
           <TapGestureHandler
@@ -336,7 +336,7 @@ const Home = ({navigation}) => {
               style={styles.bottomLeft}>
               <Image source={ImagePath.chaticon} style={styles.heart} />
               <Text style={styles.captiontxt}>
-                {` ${item.comments.length ? item.comments.length : 0} comments`}
+                {` ${item.comments.length ? item.comments.length : 0} Comments`}
               </Text>
             </TouchableOpacity>
           </View>
@@ -371,29 +371,42 @@ const Home = ({navigation}) => {
         onClose={() => setopenEditM(false)}
       />
       <Loader visible={loading} />
-      <Text style={[styles.titel, {fontFamily: 'Dancing Script Bold'}]}>
-        Flex Flipe
-      </Text>
-      <TouchableOpacity
-        onPress={() => {
-          setshowLogout(true);
-        }}
-        style={{position: 'absolute', right: 10, top: 10}}>
-        <Image
-          source={ImagePath.logout2}
-          style={{width: 24, height: 24, tintColor: Colors.white}}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(RoutesName.ChatScreen);
-        }}
-        style={{position: 'absolute', right: 50, top: 10}}>
-        <Image
-          source={ImagePath.chaticon}
-          style={{width: 24, height: 24, tintColor: Colors.white}}
-        />
-      </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: Colors.black,
+          padding: 10,
+          borderBottomWidth: 2,
+          borderColor: Colors.white,
+        }}>
+        <Text
+          style={[styles.titel, {fontFamily: 'Dancing Script Bold', flex: 1}]}>
+          flix post
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(RoutesName.ChatScreen);
+          }}
+          style={{marginHorizontal: 10}}>
+          <Image
+            source={ImagePath.chaticon}
+            style={{width: 24, height: 24, tintColor: Colors.white}}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setshowLogout(true);
+          }}
+          style={{marginHorizontal: 10}}>
+          <Image
+            source={ImagePath.logout2}
+            style={{width: 24, height: 24, tintColor: Colors.white}}
+          />
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={postdata}
         renderItem={(item, index) => renderItem(item, index)}
@@ -487,7 +500,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 15,
     alignSelf: 'center',
-    paddingVertical: 10,
+    paddingVertical: 5,
     justifyContent: 'center',
   },
   container: {
@@ -497,7 +510,7 @@ const styles = StyleSheet.create({
   titel: {
     fontSize: 30,
     color: Colors.white,
-    marginLeft: wp(2),
+    marginHorizontal: wp(6),
   },
   bottomnav: {
     width: '100%',
