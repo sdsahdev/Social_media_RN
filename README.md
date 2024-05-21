@@ -70,7 +70,7 @@ Distributed under the MIT License. See LICENSE for more information.
 
 Contact 📬
 - Your Name - sahev domadiya
-- Email - sahdevdomadiya9@gnail.com
+- Email - sahdevdomadiya9@gmail.com
 - Project Link: [https://github.com/your-username/flix-post](https://github.com/sdsahdev/Social_media_RN)
 
 This README was generated with ❤️ by Your Name
