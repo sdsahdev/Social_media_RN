@@ -33,11 +33,10 @@ Welcome to **Flix-Post**, a dynamic social media application built with React Na
 
 
 <!-- Add your screenshots here -->
-<img src="https://github.com/sdsahdev/Whastapp_status_saver/assets/86869319/7ebaf666-8e36-4e79-9b22-e6fdb43c386d" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
+<img src="https://github.com/sdsahdev/Social_media_RN/assets/86869319/cdf5e4ac-ba27-4788-8cbb-1bf32caec20c" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
 <img src="https://github.com/sdsahdev/Whastapp_status_saver/assets/86869319/0ee1932f-f6e3-4e57-97a9-66806906a733" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
 <img src="https://github.com/sdsahdev/Whastapp_status_saver/assets/86869319/7c643921-c7f5-453b-9eb6-13f4b644e90c" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
 <img src="https://github.com/sdsahdev/Whastapp_status_saver/assets/86869319/2a8c6ea2-7b33-4a20-820f-339346b96736" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
-<video src='https://res.cloudinary.com/dopoup1z9/video/upload/v1716284786/lvvnzruazsuuy65hdm4h.mp4' data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
 
 
 
