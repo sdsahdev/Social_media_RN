@@ -209,7 +209,9 @@ const Profile = ({navigation}) => {
                 justifyContent: 'center',
               }}>
               <ImageBackground
-                source={{uri: item.imageUrl}}
+                source={
+                  item.imageUrl ? {uri: item?.imageUrl} : ImagePath.gallaryicon
+                }
                 style={[
                   styles.imagePost,
                   {
@@ -300,7 +302,11 @@ const Profile = ({navigation}) => {
           <View style={styles.coverAre}>
             {profileData.coverPic != null && profileData.coverPic != '' ? (
               <Image
-                source={{uri: profileData.coverPic}}
+                source={
+                  profileData?.coverPic
+                    ? {uri: profileData?.coverPic}
+                    : ImagePath.gallaryicon
+                }
                 style={{width: '100%', height: '100%', resizeMode: 'cover'}}
               />
             ) : null}
@@ -308,7 +314,11 @@ const Profile = ({navigation}) => {
           <View style={styles.profileView}>
             {profileData?.profilePic != '' ? (
               <Image
-                source={{uri: profileData?.profilePic}}
+                source={
+                  profileData?.profilePic
+                    ? {uri: profileData?.profilePic}
+                    : ImagePath?.usericon
+                }
                 style={[styles.profileView, {marginTop: 0, marginLeft: 0}]}
               />
             ) : (
@@ -372,7 +382,7 @@ export const styles = StyleSheet.create({
   coverAre: {
     width: '100%',
     height: 150,
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.black3,
   },
   values: {fontSize: 18, fontWeight: '600', color: Colors.white},
   titel: {fontSize: 16, marginTop: 5, color: Colors.white},
@@ -436,7 +446,7 @@ export const styles = StyleSheet.create({
   followtxt: {color: Colors.white},
   follwobtn: {
     height: hp(6),
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.black3,
     paddingLeft: 15,
     paddingRight: 15,
     marginTop: 10,

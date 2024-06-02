@@ -1,4 +1,4 @@
-import {useIsFocused, useRoute} from '@react-navigation/native'; // Import the hook
+import {useFocusEffect, useIsFocused, useRoute} from '@react-navigation/native'; // Import the hook
 import axios from 'axios';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
@@ -63,12 +63,17 @@ const MessageScreen = ({navigation}) => {
   const [loading, setloading] = useState(false);
   const count = useSelector(state => state?.message?.NewMessageAlert);
   let temcurrent = page;
-
+  const isFocused = useIsFocused();
   useEffect(() => {
-    dispatch(removeNewMessage(msgid));
-    hasAndroidPermission();
-    getmssageDetails();
-  }, []);
+    console.log(isFocused, '===isclose==');
+    if (isFocused) {
+      console.log('===enterred==');
+      dispatch(removeNewMessage(msgid));
+      hasAndroidPermission();
+      getmssageDetails();
+    }
+  }, [isFocused]);
+
   async function hasAndroidPermission() {
     const getCheckPermissionPromise = () => {
       if (Platform.Version >= 33) {
@@ -326,6 +331,7 @@ const MessageScreen = ({navigation}) => {
         data={chats}
         showsVerticalScrollIndicator={false}
         key={data => data._id}
+        keyExtractor={(item, index) => item?._id}
         contentContainerStyle={{width: '100%', flexGrow: 1}}
         inverted
         onEndReachedThreshold={0.1}
@@ -360,6 +366,7 @@ const MessageScreen = ({navigation}) => {
           }
         }}
         renderItem={data => {
+          console.log(data.index);
           return (
             <UserMsg
               key={data?.index}
@@ -382,7 +389,7 @@ const MessageScreen = ({navigation}) => {
           <TouchableOpacity
             style={{padding: 4}}
             onPress={() =>
-              navigation.navigate(RoutesName.GallaryScreen, {id: msgid})
+              navigation.replace(RoutesName.GallaryScreen, {id: msgid})
             }>
             <FastImage
               source={ImagePath.gallaryicon}

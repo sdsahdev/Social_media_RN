@@ -1,12 +1,15 @@
-// export const LOCAL_HOST = 'http://127.0.0.1:8200';
+// export const LOCAL_HOST = 'http://192.0.0.2:8200';
 // export const BASE_URL = `${LOCAL_HOST}/socialapp/api`;
 export const BASE_URL =
   'https://social-media-backend-wkdd.onrender.com/socialapp/api';
 export const Soket_Local = 'https://social-media-backend-wkdd.onrender.com';
 export const API_URLS = {
   LOGIN_URL: '/auth/login',
+  SEND_OTP: '/auth/send-otp',
   REGISTER_URL: '/auth/register',
+  CHANGE_PASSWORD_URL: '/auth/change-password',
   GET_POST_URL: '/post/getallpost',
+  GET_SINGLE_POST_URL: '/post/getpost',
   GET_USER_URL: '/users/getUser',
   ADD_POST_URL: '/post/addpost',
   DELETE_POST_URL: '/post/delete',
@@ -37,6 +40,7 @@ export const API_URLS = {
 export const RoutesName = {
   Login: 'Login',
   Splash: 'Splash',
+  DublicateSplash: 'DublicateSplash',
   Signup: 'Signup',
   Home: 'Home',
   UploadPost: 'UploadPost',
@@ -52,6 +56,8 @@ export const RoutesName = {
   ChatDetails: 'ChatDetails',
   VideoCalling: 'VideoCalling',
   SigninOption: 'SigninOption',
+  SapratePost: 'SapratePost',
+  Loader: 'Loader',
 };
 export const ImagePath = {
   homeicon: require('../Images/house.png'),

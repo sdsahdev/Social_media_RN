@@ -50,7 +50,7 @@ const CustomTextInput = ({
           placeholderTextColor={Colors.white}
           value={value}
           onChangeText={onChangeText}
-          style={[{width: '80%'}, customTxtStyle]}
+          style={[{width: '80%', color: Colors.white}, customTxtStyle]}
           keyboardType={keyboardType ? keyboardType : 'default'}
         />
       </View>

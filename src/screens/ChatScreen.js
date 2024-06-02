@@ -38,6 +38,7 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 import {showMessage} from 'react-native-flash-message';
+import FastImage from 'react-native-fast-image';
 
 const ChatScreen = ({navigation}) => {
   const isFocused = useIsFocused();
@@ -304,8 +305,15 @@ const ChatScreen = ({navigation}) => {
         </View>
       );
     };
-    console.log(item.participants[0].profilePic, '==chat item');
-    const imagehere = item.participants[0].profilePic;
+    const withoutUser = item.participants.filter(
+      item => item._id != auth?.data?.data?._id,
+    );
+    const imagehere = withoutUser[0]?.profilePic;
+    const imageSecond = withoutUser[1]?.profilePic;
+    if (index == 0) {
+      console.log(item, '====render===');
+      console.log(withoutUser);
+    }
     return (
       <Swipeable
         ref={swipeableRefs.current[index]}
@@ -317,14 +325,35 @@ const ChatScreen = ({navigation}) => {
           }
           style={styles.chatList}>
           <View style={styles.ImgView}>
-            <Image
+            <FastImage
+              tintColor={imagehere ? null : Colors.white}
               source={imagehere != '' ? {uri: imagehere} : ImagePath.slimuser}
               style={[
                 styles.imageprofile,
-                {tintColor: imagehere ? null : Colors.white},
+                {
+                  backgroundColor: Colors.black,
+                },
               ]}
             />
-            <View style={{marginLeft: 10}}>
+            {withoutUser.length > 1 ? (
+              <Image
+                source={
+                  imageSecond != '' ? {uri: imageSecond} : ImagePath.slimuser
+                }
+                style={[
+                  styles.imageprofile,
+                  {
+                    tintColor: imageSecond ? null : Colors.white,
+                    position: 'absolute',
+                    top: 8,
+                    left: 10,
+                    backgroundColor: Colors.black,
+                  },
+                ]}
+              />
+            ) : null}
+
+            <View style={{marginLeft: 30}}>
               <Text style={{color: Colors.white}}>{item?.name}</Text>
               {item?.lastMessage?.content && (
                 <Text style={{color: Colors.placeColor}}>

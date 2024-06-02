@@ -10,22 +10,13 @@ import {
   Image,
   ImageBackground,
   Dimensions,
+  Share,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
-
-import EditCapsion from '../components/EditCapsion';
-import Loader from '../components/Loader';
-import OptionModal from '../components/OptionModal';
-import TimeAgo from '../components/TimeAgo';
-import {Colors} from '../utils/Colors';
-
-import {logout} from '../redux/Slice/AuthSlice';
-import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
-import {getSocket} from '../socket/socket';
 import changeNavigationBarColor, {
   hideNavigationBar,
   showNavigationBar,
@@ -40,7 +31,17 @@ import Animated, {
   withDelay,
   withSpring,
 } from 'react-native-reanimated';
+import EditCapsion from '../components/EditCapsion';
+import Loader from '../components/Loader';
+import OptionModal from '../components/OptionModal';
+import TimeAgo from '../components/TimeAgo';
+import {Colors} from '../utils/Colors';
+
+import {logout} from '../redux/Slice/AuthSlice';
+import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
+import {getSocket} from '../socket/socket';
 import CommanModal from '../components/CommanModal';
+import FastImage from 'react-native-fast-image';
 const Home = ({navigation}) => {
   const isFocused = useIsFocused();
   const socket = getSocket();
@@ -58,6 +59,7 @@ const Home = ({navigation}) => {
   console.log(socket.id, '===socketid====');
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (isFocused) {
       featchData();
@@ -89,9 +91,7 @@ const Home = ({navigation}) => {
     axios
       .get(BASE_URL + API_URLS.GET_USER_URL + '/' + auth?.data?.data?._id)
       .then(response => {
-        console.log(response.data);
         if (response.data.status) {
-          console.log(response.data.data.following, '====list==');
           setfollowList(response.data.data.following);
         }
       })
@@ -107,12 +107,10 @@ const Home = ({navigation}) => {
       Authorization: `Bearer ${token}`, // Include token in headers
     };
 
-    console.log(headers);
     axios
       .get(BASE_URL + API_URLS.GET_POST_URL, {headers: headers})
       .then(res => {
         setloading(false);
-        console.log(res.data, '======');
         setPostData(res?.data.data.reverse());
       })
       .catch(e => {
@@ -130,15 +128,14 @@ const Home = ({navigation}) => {
       const body = {
         id: auth?.data?.data._id,
       };
-      console.log(id, '==body==');
-      console.log(body, '==body==');
+
       axios
         .put(BASE_URL + API_URLS.FOLLOW_USER + '/' + id, body, myHeader)
         .then(response => {
           setloading(false);
           followList();
-          console.log(response.data, '==response follow====='),
-            setloading(false);
+
+          setloading(false);
         })
         .catch(error => {
           setloading(false);
@@ -159,9 +156,7 @@ const Home = ({navigation}) => {
     axios
       .delete(BASE_URL + API_URLS.DELETE_POST_URL + '/' + selectedItem._id)
       .then(response => {
-        console.log(response.data, '==response delete====='),
-          setloading(false),
-          featchData();
+        setloading(false), featchData();
       })
       .catch(error => {
         console.log(error, '=====error delete==='), setloading(false);
@@ -204,9 +199,29 @@ const Home = ({navigation}) => {
       });
   };
 
+  const handleShare = async id => {
+    try {
+      const url = `https://3gig1.app.link/FlixPost?flix=${id}`;
+      const result = await Share.share({
+        message: `Check out this post on Flex-Post \n\n ${url}\n\nDownload FlixPost to see more amazing content!`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+          console.log('Shared successfully');
+        } else {
+          // shared
+          console.log('Shared successfully');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+        console.log('Sharing dismissed');
+      }
+    } catch (error) {
+      console.error('Error sharing:', error.message);
+    }
+  };
   const renderItem = ({item, index}) => {
-    console.log(item);
-
     const checkLike = item.likes.find(like => like == auth?.data?.data._id);
     const followCheck = followListdata.find(
       follow => follow == item.userId?._id,
@@ -229,7 +244,7 @@ const Home = ({navigation}) => {
                 })
               }
               style={styles.topLeft}>
-              <Image
+              <FastImage
                 source={
                   item?.userId?.profilePic
                     ? {uri: item?.userId?.profilePic}
@@ -250,12 +265,13 @@ const Home = ({navigation}) => {
             </TouchableOpacity>
             {auth?.data?.data._id == item.userId?._id ? (
               <TouchableOpacity
+                style={{alignItems: 'center', justifyContent: 'center'}}
                 onPress={() => {
                   setopenOpsion(true), setselectedItem(item);
                 }}>
                 <Image
                   source={ImagePath.menu}
-                  style={{width: 24, height: 24}}
+                  style={{width: 24, height: 24, tintColor: Colors.white}}
                 />
               </TouchableOpacity>
             ) : (
@@ -339,6 +355,14 @@ const Home = ({navigation}) => {
                 {` ${item.comments.length ? item.comments.length : 0} Comments`}
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                handleShare(item._id);
+              }}
+              style={styles.bottomLeft}>
+              <Image source={ImagePath.shareicon} style={styles.heart} />
+              <Text style={styles.captiontxt}>{` Share`}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </GestureHandlerRootView>
@@ -377,8 +401,8 @@ const Home = ({navigation}) => {
           alignItems: 'center',
           backgroundColor: Colors.black,
           padding: 10,
-          borderBottomWidth: 2,
-          borderColor: Colors.white,
+          borderBottomWidth: 1,
+          borderColor: Colors.black5,
         }}>
         <Text
           style={[styles.titel, {fontFamily: 'Dancing Script Bold', flex: 1}]}>

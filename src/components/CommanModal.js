@@ -30,7 +30,7 @@ const CommanModal = ({status, titel, cancelpress, savedata, showtxt}) => {
                 savedata();
               }}
               style={[styles.cancelbtn, {backgroundColor: Colors.black}]}>
-              <Text style={styles.btntxt}>Save</Text>
+              <Text style={styles.btntxt}>Sure</Text>
             </TouchableOpacity>
           </View>
         </View>

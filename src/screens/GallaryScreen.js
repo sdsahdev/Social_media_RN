@@ -127,6 +127,9 @@ const GallaryScreen = ({navigation}) => {
       const type = image.node.type;
       const uri = image.node.image.uri;
       const filename = uri.substring(uri.lastIndexOf('/') + 1);
+      console.log(type, '===formdata==');
+      console.log(uri, '===formdata==');
+      console.log(filename, '===formdata==');
       formData.append(`files`, {
         // Change field name to 'files'
         uri: uri,
@@ -135,9 +138,10 @@ const GallaryScreen = ({navigation}) => {
       });
     });
     formData.append('sender', auth?.data?._id);
-    formData.append('content', socket.id);
+    // formData.append('content', socket.id);
     formData.append('chatId', chatId);
     console.log(formData, '===formdata==');
+
     axios
       .post(`${BASE_URL}${API_URLS.SEND_PICS}`, formData, {
         headers: {
@@ -145,7 +149,7 @@ const GallaryScreen = ({navigation}) => {
         },
       })
       .then(resp => {
-        navigation.navigate(RoutesName.MessageScreen, {id: chatId});
+        navigation.replace(RoutesName.MessageScreen, {id: chatId});
         console.log(resp.data, '===image====');
       })
       .catch(error => {
