@@ -21,11 +21,6 @@ export const Colors = {
 
   blackcombi: '#1A1A1A',
 
-  dark_theme1: '#392467',
-  dark_theme2: '#5D3587',
-  dark_theme3: '#A367B1',
-  dark_theme4: '#FFD1E3',
-
   light_theme1: '#756AB6',
   light_theme2: '#AC87C5',
   light_theme3: '#E0AED0',

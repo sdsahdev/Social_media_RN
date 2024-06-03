@@ -42,7 +42,7 @@ const InputModal = ({
               onPress={() => {
                 savedata();
               }}
-              style={[styles.cancelbtn, {backgroundColor: Colors.dark_theme3}]}>
+              style={[styles.cancelbtn, {backgroundColor: Colors.black3}]}>
               <Text style={styles.btntxt}>Save</Text>
             </TouchableOpacity>
           </View>
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 20,
     borderRadius: 10,
+    color: Colors.black,
   },
   editTx: {
     fontSize: 16,
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
   postbtn: {
     width: '20%',
     height: '60%',
-    backgroundColor: Colors.dark_theme2,
+    backgroundColor: Colors.black3,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',

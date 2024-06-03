@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 const DublicateSplash = ({navigation, route}) => {
   return (
     <View style={styles.container}>
-      <FastImage source={ImagePath.adduser} />
+      <FastImage source={ImagePath.logoicon} />
     </View>
   );
 };

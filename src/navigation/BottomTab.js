@@ -95,8 +95,6 @@ const BottomTabScreen = () => {
       type: require('../Images/user.png'), // Replace with actual image paths
       component: Profile,
       color: Colors.black,
-
-      // alphaClr: Colors.dark_theme2,
     },
   ];
 

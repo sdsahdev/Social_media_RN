@@ -193,7 +193,7 @@ const ChatScreen = ({navigation}) => {
   const swipeableRefs = useRef([]);
 
   useEffect(() => {
-    initializeSwipeableRefs(chatData.length);
+    initializeSwipeableRefs(chatData?.length);
   }, []);
 
   const initializeSwipeableRefs = length => {
@@ -336,7 +336,7 @@ const ChatScreen = ({navigation}) => {
               ]}
             />
             {withoutUser.length > 1 ? (
-              <Image
+              <FastImage
                 source={
                   imageSecond != '' ? {uri: imageSecond} : ImagePath.slimuser
                 }

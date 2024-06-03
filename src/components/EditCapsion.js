@@ -11,6 +11,7 @@ import {
 // import Modal from 'react-native-modal';
 import {Colors} from '../utils/Colors';
 import {ImagePath} from '../utils/Strings';
+import FastImage from 'react-native-fast-image';
 
 const EditCapsion = ({onClick, onClose, visible, data}) => {
   const [captionedit, setcaptionedit] = useState('');
@@ -77,7 +78,7 @@ const EditCapsion = ({onClick, onClose, visible, data}) => {
           />
         </View>
         {imageurl != '' && (
-          <Image
+          <FastImage
             source={{uri: imageurl}}
             style={{
               width: '90%',

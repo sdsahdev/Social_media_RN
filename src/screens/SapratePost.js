@@ -40,6 +40,7 @@ import {logout} from '../redux/Slice/AuthSlice';
 import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
 import {getSocket} from '../socket/socket';
 import CommanModal from '../components/CommanModal';
+import FastImage from 'react-native-fast-image';
 const SapratePost = ({navigation, route}) => {
   const isFocused = useIsFocused();
   const socket = getSocket();
@@ -234,7 +235,7 @@ const SapratePost = ({navigation, route}) => {
             }
             style={styles.topLeft}>
             {console.log(item?.userId?.profilePic, '==imgcheck==')}
-            <Image
+            <FastImage
               source={
                 item?.userId?.profilePic
                   ? {uri: item?.userId?.profilePic}
@@ -257,7 +258,10 @@ const SapratePost = ({navigation, route}) => {
               onPress={() => {
                 setopenOpsion(true), setselectedItem(item);
               }}>
-              <Image source={ImagePath.menu} style={{width: 24, height: 24}} />
+              <FastImage
+                source={ImagePath.menu}
+                style={{width: 24, height: 24}}
+              />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -343,7 +347,7 @@ const SapratePost = ({navigation, route}) => {
               navigation.navigate(RoutesName.Comment, {id: item?._id});
             }}
             style={styles.bottomLeft}>
-            <Image source={ImagePath.chaticon} style={styles.heart} />
+            <FastImage source={ImagePath.chaticon} style={styles.heart} />
             <Text style={styles.captiontxt}>
               {` ${
                 item?.comments?.length ? item?.comments?.length : 0
@@ -355,7 +359,7 @@ const SapratePost = ({navigation, route}) => {
               navigation.navigate(RoutesName.SapratePost, {id: item._id});
             }}
             style={styles.bottomLeft}>
-            <Image source={ImagePath.shareicon} style={styles.heart} />
+            <FastImage source={ImagePath.shareicon} style={styles.heart} />
             <Text style={styles.captiontxt}>{` Share`}</Text>
           </TouchableOpacity>
         </View>

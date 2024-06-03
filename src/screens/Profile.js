@@ -33,6 +33,7 @@ import Animated, {
   withDelay,
   withSpring,
 } from 'react-native-reanimated';
+import FastImage from 'react-native-fast-image';
 
 const Profile = ({navigation}) => {
   const auth = useSelector(state => state.auth);
@@ -154,7 +155,7 @@ const Profile = ({navigation}) => {
   };
 
   const renderItem = ({item, index}) => {
-    console.log(item);
+    console.log(item?.userId?.profilePic);
     const checkLike = item.likes.find(like => like == auth?.data?.data._id);
     return (
       <GestureHandlerRootView style={{flex: 1}}>
@@ -165,7 +166,7 @@ const Profile = ({navigation}) => {
           ]}>
           <View style={styles.topView}>
             <View style={styles.topLeft}>
-              <Image
+              <FastImage
                 source={
                   item?.userId?.profilePic
                     ? {uri: item?.userId?.profilePic}
@@ -174,9 +175,9 @@ const Profile = ({navigation}) => {
                 style={styles.profile}
               />
               <View style={styles.usernameView}>
-                <Text style={styles.captiontxt}>{item.username}</Text>
+                <Text style={styles.captiontxt}>{item?.username}</Text>
                 <Text style={{color: Colors.white}}>
-                  User post created: <TimeAgo timestamp={item.createdAt} />
+                  User post created: <TimeAgo timestamp={item?.createdAt} />
                 </Text>
               </View>
             </View>
@@ -257,7 +258,7 @@ const Profile = ({navigation}) => {
                 navigation.navigate(RoutesName.Comment, {id: item._id});
               }}
               style={styles.bottomLeft}>
-              <Image source={ImagePath.chaticon} style={styles.heart} />
+              <FastImage source={ImagePath.chaticon} style={styles.heart} />
               <Text style={styles.captiontxt}>
                 {` ${item.comments.length ? item.comments.length : 0} comments`}
               </Text>
@@ -301,7 +302,8 @@ const Profile = ({navigation}) => {
           />
           <View style={styles.coverAre}>
             {profileData.coverPic != null && profileData.coverPic != '' ? (
-              <Image
+              <FastImage
+                tin
                 source={
                   profileData?.coverPic
                     ? {uri: profileData?.coverPic}
@@ -313,7 +315,7 @@ const Profile = ({navigation}) => {
           </View>
           <View style={styles.profileView}>
             {profileData?.profilePic != '' ? (
-              <Image
+              <FastImage
                 source={
                   profileData?.profilePic
                     ? {uri: profileData?.profilePic}
@@ -323,7 +325,7 @@ const Profile = ({navigation}) => {
               />
             ) : (
               <>
-                <Image source={ImagePath.usericon} style={styles.imaview} />
+                <FastImage source={ImagePath.usericon} style={styles.imaview} />
               </>
             )}
           </View>
@@ -357,13 +359,24 @@ const Profile = ({navigation}) => {
               <Text style={styles.titel}>Posts</Text>
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate(RoutesName.EditProfile, {data: profileData});
-            }}
-            style={styles.editBtn}>
-            <Text style={styles.edittx}>Edit Profile</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(RoutesName.EditProfile, {
+                  data: profileData,
+                });
+              }}
+              style={styles.editBtn}>
+              <Text style={styles.edittx}>Edit Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(RoutesName.SettingScreen);
+              }}
+              style={styles.editBtn}>
+              <Text style={styles.edittx}>Settings</Text>
+            </TouchableOpacity>
+          </View>
         </>
       )}
       data={postdata}
@@ -404,7 +417,7 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
   editBtn: {
-    width: '50%',
+    width: '30%',
     height: heightPercentageToDP(7),
     borderRadius: 10,
     borderWidth: 1,

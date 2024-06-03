@@ -94,7 +94,7 @@ const ShowUserList = memo(
                     <TextInput
                       placeholder="Search"
                       placeholderTextColor={Colors.white}
-                      style={[{width: 300, fontSize: 20}]}
+                      style={[{width: 300, fontSize: 20, color: Colors.white}]}
                       value={search}
                       onChangeText={text => {
                         searchText(text);

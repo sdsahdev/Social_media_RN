@@ -23,9 +23,9 @@ import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
 import axios from 'axios';
 import OtpScreen from './OtpScreen';
 const Login = ({navigation, onClicks, onGoregister}) => {
-  const [email, setEmail] = useState('devdev@gamil.com');
+  const [email, setEmail] = useState('');
 
-  const [password, setPassword] = useState('123456');
+  const [password, setPassword] = useState('');
   const [badEmail, setBadEmail] = useState('');
   const [badPassword, setBadPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -102,13 +102,7 @@ const Login = ({navigation, onClicks, onGoregister}) => {
       .then(response => response.json())
       .then(responseData => {
         setLoading(false);
-        showMessage({
-          message: responseData?.message,
-          type: responseData.status ? 'success' : 'danger',
-          backgroundColor: responseData.status ? 'green' : 'red', // background color
-          icon: responseData.status ? 'success' : 'danger', // background color
-          color: '#fff', // text color
-        });
+
         console.log(responseData);
         if (responseData.status) {
           dispatch(setAuthdata(responseData));

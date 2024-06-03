@@ -57,8 +57,7 @@ const ChatDetails = ({navigation}) => {
     axios
       .get(`${BASE_URL}${API_URLS.GET_CHAT_DETAILS}/${data._id}?populate=true`)
       .then(response => {
-        console.log(response.data);
-        if (response.data.success) {
+        if (response?.data?.success) {
           setchatDeatils(response?.data?.chat);
           setEditName(chatDeatils?.name);
         }
@@ -79,9 +78,7 @@ const ChatDetails = ({navigation}) => {
       };
       axios
         .post(BASE_URL + API_URLS.RENAME_GROUP, body, myHeader)
-        .then(response => {
-          console.log(response.data, '==response Rename=====');
-        })
+        .then(response => {})
         .catch(error => {
           console.log(error, '=====error Rename===');
         })
@@ -107,9 +104,7 @@ const ChatDetails = ({navigation}) => {
           body,
           myHeader,
         )
-        .then(response => {
-          console.log(response.data, '==response delete=====');
-        })
+        .then(response => {})
         .catch(error => {
           showMessage({
             message: error?.response?.data?.error
@@ -143,8 +138,10 @@ const ChatDetails = ({navigation}) => {
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <FastImage
-            tintColor={Colors.white}
-            source={ImagePath.usericon}
+            tintColor={item?.profilePic ? null : Colors.white}
+            source={
+              item?.profilePic ? {uri: item?.profilePic} : ImagePath.usericon
+            }
             style={styles.imageprofile}
           />
           <Text
@@ -163,7 +160,13 @@ const ChatDetails = ({navigation}) => {
       </View>
     );
   };
+  const withoutUser = chatDeatils?.participants.filter(
+    item => item?._id != auth?.data?._id,
+  );
 
+  const imagehere =
+    withoutUser?.length >= 1 ? withoutUser[0]?.profilePic : null;
+  console.log(withoutUser, '==withoutUser=withoutUser');
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
       <TouchableOpacity onPress={() => navigation.pop()}>
@@ -176,13 +179,13 @@ const ChatDetails = ({navigation}) => {
 
       <View style={{marginTop: hp(10), alignItems: 'center'}}>
         <FastImage
-          tintColor={Colors.white}
+          source={imagehere ? {uri: imagehere} : ImagePath.usericon}
+          tintColor={imagehere ? null : Colors.white}
           style={{
             width: 60,
             height: 60,
             borderRadius: 30,
           }}
-          source={ImagePath.usericon}
         />
         {isRename == false ? (
           <Text style={{fontSize: 20, color: Colors.white}}>
@@ -239,7 +242,6 @@ const ChatDetails = ({navigation}) => {
         <TouchableOpacity
           onPress={() => {
             setisRename(!isRename),
-              console.log(textInputRef.current),
               textInputRef.current && textInputRef.current.focus();
           }}
           style={{flexDirection: 'column', alignItems: 'center'}}>
@@ -275,7 +277,7 @@ const ChatDetails = ({navigation}) => {
           </Text>
         </TouchableOpacity>
       </View>
-      {console.log(chatDeatils, '==data,')}
+
       <Text
         style={{
           fontSize: 15,

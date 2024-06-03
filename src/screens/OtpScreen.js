@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   male: {
     borderWidth: 2,
-    borderColor: Colors.dark_theme3,
+    borderColor: Colors.black3,
     width: '40%',
     height: hp(12),
     alignItems: 'center',

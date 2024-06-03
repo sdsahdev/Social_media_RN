@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   postbtn: {
     width: '20%',
     height: '60%',
-    backgroundColor: Colors.dark_theme2,
+    backgroundColor: Colors.black3,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',

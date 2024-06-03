@@ -16,6 +16,7 @@ import CustomTextInput from '../components/CustomTextInput';
 import Loader from '../components/Loader';
 import {Colors} from '../utils/Colors';
 import {API_URLS, BASE_URL, ImagePath} from '../utils/Strings';
+import FastImage from 'react-native-fast-image';
 
 const EditProfile = ({navigation}) => {
   const rotes = useRoute();
@@ -233,13 +234,13 @@ const EditProfile = ({navigation}) => {
         onPress={() => openGallaryf('cover')}
         style={styles.coverbtn}>
         {imageuri != '' ? (
-          <Image source={{uri: imageuri}} style={styles.coverimage} />
+          <FastImage source={{uri: imageuri}} style={styles.coverimage} />
         ) : (
           <>
-            <Image source={ImagePath.homeicon} style={styles.image} />
+            <FastImage source={ImagePath.homeicon} style={styles.image} />
           </>
         )}
-        <Image source={ImagePath.editicon} style={styles.editimage} />
+        <FastImage source={ImagePath.editicon} style={styles.editimage} />
       </TouchableOpacity>
 
       {isCoverEditable ? (
@@ -254,14 +255,14 @@ const EditProfile = ({navigation}) => {
         onPress={() => openGallaryf('profile')}
         style={styles.profilepic}>
         {profileUri != '' ? (
-          <Image
+          <FastImage
             source={{uri: profileUri}}
             style={[styles.profilepic, styles.profilebtn]}
           />
         ) : (
-          <Image source={ImagePath.usericon} style={styles.image} />
+          <FastImage source={ImagePath.usericon} style={styles.image} />
         )}
-        <Image source={ImagePath.editicon} style={styles.editimage} />
+        <FastImage source={ImagePath.editicon} style={styles.editimage} />
       </TouchableOpacity>
 
       {isProfileEditable ? (
@@ -365,7 +366,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.black3,
     marginLeft: 20,
     marginTop: 20,
     justifyContent: 'center',
@@ -374,7 +375,7 @@ const styles = StyleSheet.create({
   uploadbt: {
     width: 120,
     height: 50,
-    backgroundColor: Colors.dark_theme3,
+    backgroundColor: Colors.black3,
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 20,

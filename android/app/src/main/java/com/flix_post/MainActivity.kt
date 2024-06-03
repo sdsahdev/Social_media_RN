@@ -1,4 +1,4 @@
-package com.deep_link_demo
+package com.flix_post
 
 import io.branch.rnbranch.*
 import android.content.Intent
@@ -13,7 +13,7 @@ class MainActivity : ReactActivity() {
      * Returns the name of the main component registered from JavaScript. This is used to schedule
      * rendering of the component.
      */
-    override fun getMainComponentName(): String = "deep_link_demo"
+    override fun getMainComponentName(): String = "flix_post"
 
     /**
      * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]

@@ -350,7 +350,7 @@ const Home = ({navigation}) => {
                 navigation.navigate(RoutesName.Comment, {id: item._id});
               }}
               style={styles.bottomLeft}>
-              <Image source={ImagePath.chaticon} style={styles.heart} />
+              <FastImage source={ImagePath.chaticon} style={styles.heart} />
               <Text style={styles.captiontxt}>
                 {` ${item.comments.length ? item.comments.length : 0} Comments`}
               </Text>
@@ -360,7 +360,7 @@ const Home = ({navigation}) => {
                 handleShare(item._id);
               }}
               style={styles.bottomLeft}>
-              <Image source={ImagePath.shareicon} style={styles.heart} />
+              <FastImage source={ImagePath.shareicon} style={styles.heart} />
               <Text style={styles.captiontxt}>{` Share`}</Text>
             </TouchableOpacity>
           </View>

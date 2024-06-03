@@ -18,6 +18,7 @@ import Loader from '../components/Loader';
 import TimeAgo from '../components/TimeAgo';
 import {Colors} from '../utils/Colors';
 import {API_URLS, BASE_URL, ImagePath} from '../utils/Strings';
+import FastImage from 'react-native-fast-image';
 const Comment = () => {
   const auth = useSelector(state => state.auth);
   const rotes = useRoute();
@@ -157,7 +158,7 @@ const Comment = () => {
             alignItems: 'center',
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
+            <FastImage
               source={{uri: item?.userId?.profilePic}}
               style={{
                 width: 40,
@@ -339,7 +340,7 @@ const styles = StyleSheet.create({
   postbtn: {
     width: '20%',
     height: '60%',
-    backgroundColor: Colors.dark_theme2,
+    backgroundColor: Colors.black3,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',

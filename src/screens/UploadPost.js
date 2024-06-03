@@ -156,7 +156,7 @@ const UploadPost = ({navigation}) => {
 
       {imageData != null ? (
         <View style={styles.ImageView}>
-          <Image
+          <FastImage
             source={{uri: imageData?.assets[0]?.uri}}
             style={styles.imagestyle}
           />
@@ -177,13 +177,13 @@ const UploadPost = ({navigation}) => {
       <TouchableOpacity
         onPress={() => requestCameraPermission()}
         style={styles.containBox}>
-        <Image source={ImagePath.cameraicon} style={styles.camera} />
+        <FastImage source={ImagePath.cameraicon} style={styles.camera} />
         <Text style={styles.pickerTitel}>Open Camera</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => requestExternalWritePermission()}
         style={[styles.containBox]}>
-        <Image source={ImagePath.gallaryicon} style={styles.camera} />
+        <FastImage source={ImagePath.gallaryicon} style={styles.camera} />
         <Text style={styles.pickerTitel}>Open Gallary</Text>
       </TouchableOpacity>
 
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   camera: {
     width: 24,
     height: 24,
-    tintColor: '#9e9e9e',
+
     margin: 5,
   },
   pickerTitel: {

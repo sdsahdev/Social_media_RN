@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "deep_link_demo.app"
-               BlueprintName = "deep_link_demo"
-               ReferencedContainer = "container:deep_link_demo.xcodeproj">
+               BuildableName = "flix_post.app"
+               BlueprintName = "flix_post"
+               ReferencedContainer = "container:flix_post.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "deep_link_demoTests.xctest"
-               BlueprintName = "deep_link_demoTests"
-               ReferencedContainer = "container:deep_link_demo.xcodeproj">
+               BuildableName = "flix_postTests.xctest"
+               BlueprintName = "flix_postTests"
+               ReferencedContainer = "container:flix_post.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "deep_link_demo.app"
-            BlueprintName = "deep_link_demo"
-            ReferencedContainer = "container:deep_link_demo.xcodeproj">
+            BuildableName = "flix_post.app"
+            BlueprintName = "flix_post"
+            ReferencedContainer = "container:flix_post.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "deep_link_demo.app"
-            BlueprintName = "deep_link_demo"
-            ReferencedContainer = "container:deep_link_demo.xcodeproj">
+            BuildableName = "flix_post.app"
+            BlueprintName = "flix_post"
+            ReferencedContainer = "container:flix_post.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

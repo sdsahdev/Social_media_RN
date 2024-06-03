@@ -1,15 +1,35 @@
 {
   "project_info": {
     "project_number": "901272262595",
+    "firebase_url": "https://practicetaskreactnative-default-rtdb.firebaseio.com",
     "project_id": "practicetaskreactnative",
     "storage_bucket": "practicetaskreactnative.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:901272262595:android:abcaab94eb54d8b151cf76",
+        "mobilesdk_app_id": "1:901272262595:android:0125050f33c3ba5251cf76",
         "android_client_info": {
-          "package_name": "com.deep_link_demo"
+          "package_name": "com.flix_post"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgBjYaqPwC7-lxcEdW8a1-x4tCs8gUNOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901272262595:android:a13872adb9d2fa4751cf76",
+        "android_client_info": {
+          "package_name": "com.webrtcexample"
         }
       },
       "oauth_client": [],

@@ -1,4 +1,4 @@
-package com.deep_link_demo
+package com.flix_post
 
 import android.app.Application
 import com.facebook.react.PackageList

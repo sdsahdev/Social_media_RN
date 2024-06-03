@@ -206,7 +206,7 @@ const GallaryScreen = ({navigation}) => {
           alignItems: 'center',
           margin: '1.5%',
         }}>
-        <Image
+        <FastImage
           source={{uri: item.node.image.uri}}
           defaultSource={ImagePath.gallaryicon}
           // tintColor={isSelecte ? 'green' : 'blue'}

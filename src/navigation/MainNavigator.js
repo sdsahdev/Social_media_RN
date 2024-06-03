@@ -34,6 +34,7 @@ import Loader from '../components/Loader';
 import {Image} from 'react-native-animatable';
 import DublicateSplash from '../screens/DublicateSplash';
 import {setDate} from 'date-fns';
+import SettingScreen from '../screens/SettingScreen';
 
 const Stack = createNativeStackNavigator();
 const linking = {
@@ -178,6 +179,10 @@ const MainNavigator = () => {
             <Stack.Screen
               name={RoutesName.MessageScreen}
               component={MessageScreen}
+            />
+            <Stack.Screen
+              name={RoutesName.SettingScreen}
+              component={SettingScreen}
             />
           </>
         ) : (

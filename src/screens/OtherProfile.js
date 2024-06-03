@@ -177,7 +177,7 @@ const OtherProfile = ({navigation}) => {
         ]}>
         <View style={styles.topView}>
           <View style={styles.topLeft}>
-            <Image source={ImagePath.usericon} style={styles.profile} />
+            <FastImage source={ImagePath.usericon} style={styles.profile} />
             <View style={styles.usernameView}>
               <Text style={styles.captiontxt}>{item.username}</Text>
               <Text style={{color: Colors.white}}>
@@ -190,7 +190,10 @@ const OtherProfile = ({navigation}) => {
               onPress={() => {
                 setopenOpsion(true), setselectedItem(item);
               }}>
-              <Image source={ImagePath.menu} style={{width: 24, height: 24}} />
+              <FastImage
+                source={ImagePath.menu}
+                style={{width: 24, height: 24}}
+              />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -205,7 +208,7 @@ const OtherProfile = ({navigation}) => {
         <Text style={styles.capttxt}>{item.caption}</Text>
 
         {item.imageUrl != '' && (
-          <Image source={{uri: item.imageUrl}} style={styles.imagePost} />
+          <FastImage source={{uri: item.imageUrl}} style={styles.imagePost} />
         )}
         <View style={styles.bottomView}>
           <TouchableOpacity

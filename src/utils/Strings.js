@@ -24,6 +24,7 @@ export const API_URLS = {
   GET_USER_POST: '/post/getuserpost',
   UPDATE_URERS: '/users/update',
   REFRESH_TOKEN: '/refresh-token',
+  DELETE_USER: '/users/delete',
 
   // chat
   GET_USERS_CHATLIST: '/chat/get_my_chat',
@@ -58,6 +59,7 @@ export const RoutesName = {
   SigninOption: 'SigninOption',
   SapratePost: 'SapratePost',
   Loader: 'Loader',
+  SettingScreen: 'SettingScreen',
 };
 export const ImagePath = {
   homeicon: require('../Images/house.png'),
@@ -91,4 +93,8 @@ export const ImagePath = {
   back: require('../Images/back.png'),
   logout2: require('../Images/logout2.png'),
   slimuser: require('../Images/slimuser.png'),
+
+  terms: require('../Images/terms-and-conditions.png'),
+  info: require('../Images/info.png'),
+  privacy: require('../Images/insurance.png'),
 };
