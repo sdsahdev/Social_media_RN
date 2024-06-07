@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
+  Image,
   ImageBackground,
   ScrollView,
   StyleSheet,
@@ -10,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
+
 import {
   heightPercentageToDP,
   heightPercentageToDP as hp,
@@ -96,29 +97,26 @@ const Profile = ({navigation}) => {
     axios
       .put(BASE_URL + API_URLS.UPDATE_POST_URL + `/` + selectedItem._id, body)
       .then(response => {
-        console.log(response.data, '==response delete====='),
-          setloading(false),
-          featchData();
+        console.log(response.data, '==response delete====='), featchData();
       })
       .catch(error => {
-        console.log(error, '=====error delete==='), setloading(false);
-      });
+        console.log(error, '=====error delete===');
+      })
+      .finally(setloading(false));
   };
   const deletePost = () => {
     setloading(true);
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
-
     axios
       .delete(BASE_URL + API_URLS.DELETE_POST_URL + `/` + selectedItem._id)
       .then(response => {
-        console.log(response.data, '==response delete====='),
-          setloading(false),
-          featchData();
+        console.log(response.data, '==response delete====='), featchData();
       })
       .catch(error => {
-        console.log(error, '=====error delete==='), setloading(false);
-      });
+        console.log(error, '=====error delete===');
+      })
+      .finally(() => setloading(false));
   };
   const getProfiledata = id => {
     axios
@@ -135,7 +133,6 @@ const Profile = ({navigation}) => {
       });
   };
   const likePost = item => {
-    // setloading(true);
     const myHeader = new Headers();
     myHeader.append('Content-Type', 'application/json');
 
@@ -145,12 +142,10 @@ const Profile = ({navigation}) => {
     axios
       .put(BASE_URL + API_URLS.LIKE_POST_URL + `/` + item._id, body)
       .then(response => {
-        console.log(response.data, '==response delete====='),
-          // setloading(false),
-          featchData();
+        console.log(response.data, '==response delete====='), featchData();
       })
       .catch(error => {
-        console.log(error, '=====error delete==='), setloading(false);
+        console.log(error, '=====error delete===');
       });
   };
 
@@ -194,48 +189,51 @@ const Profile = ({navigation}) => {
             ) : null}
           </View>
           <Text style={styles.capttxt}>{item.caption}</Text>
-
-          <TapGestureHandler
-            maxDelayMs={250}
-            numberOfTaps={2}
-            onActivated={() => {
-              dobleTab(index), likePost(item);
-            }}>
-            <Animated.View
-              style={{
-                flex: 1,
-                width: '100%',
-                height: 200,
-                alignItems: 'center',
-                justifyContent: 'center',
+          {item?.imageUrl ? (
+            <TapGestureHandler
+              maxDelayMs={250}
+              numberOfTaps={2}
+              onActivated={() => {
+                dobleTab(index), likePost(item);
               }}>
-              <ImageBackground
-                source={
-                  item.imageUrl ? {uri: item?.imageUrl} : ImagePath.gallaryicon
-                }
-                style={[
-                  styles.imagePost,
-                  {
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  },
-                ]}>
-                {animatedIndex === index && item.imageUrl !== '' && (
-                  <ImageComappoennt
-                    source={ImagePath.hearticon}
-                    style={[
-                      {
-                        width: 100,
-                        height: 100,
-                        tintColor: checkLike ? 'red' : Colors.white,
-                      },
-                      animatedStle,
-                    ]}
-                  />
-                )}
-              </ImageBackground>
-            </Animated.View>
-          </TapGestureHandler>
+              <Animated.View
+                style={{
+                  flex: 1,
+                  width: '100%',
+                  height: 200,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <ImageBackground
+                  source={
+                    item.imageUrl
+                      ? {uri: item?.imageUrl}
+                      : ImagePath.gallaryicon
+                  }
+                  style={[
+                    styles.imagePost,
+                    {
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    },
+                  ]}>
+                  {animatedIndex === index && item.imageUrl !== '' && (
+                    <ImageComappoennt
+                      source={ImagePath.hearticon}
+                      style={[
+                        {
+                          width: 100,
+                          height: 100,
+                          tintColor: checkLike ? 'red' : Colors.white,
+                        },
+                        animatedStle,
+                      ]}
+                    />
+                  )}
+                </ImageBackground>
+              </Animated.View>
+            </TapGestureHandler>
+          ) : null}
           <View style={styles.bottomView}>
             <TouchableOpacity
               onPress={() => {
@@ -332,9 +330,7 @@ const Profile = ({navigation}) => {
           <Text style={styles.useRName}>
             {profileData ? profileData?.username : ''}
           </Text>
-          <Text style={styles.emails}>
-            {profileData ? profileData?.email : ''}
-          </Text>
+
           <View style={styles.follwview}>
             <View style={styles.countView}>
               <Text style={styles.values}>

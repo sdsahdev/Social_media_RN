@@ -42,7 +42,11 @@ import {API_URLS, BASE_URL, ImagePath, RoutesName} from '../utils/Strings';
 import {getSocket} from '../socket/socket';
 import CommanModal from '../components/CommanModal';
 import FastImage from 'react-native-fast-image';
+import LinearGradient from 'react-native-linear-gradient';
+import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+
 const Home = ({navigation}) => {
+  const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
   const isFocused = useIsFocused();
   const socket = getSocket();
   const data = useSelector(state => state.auth);
@@ -56,6 +60,7 @@ const Home = ({navigation}) => {
   const token = useSelector(state => state.auth.token);
   const [animatedIndex, setAnimatedIndex] = useState(null);
   const [showLogout, setshowLogout] = useState(false);
+
   console.log(socket.id, '===socketid====');
 
   const dispatch = useDispatch();
@@ -250,8 +255,9 @@ const Home = ({navigation}) => {
                     ? {uri: item?.userId?.profilePic}
                     : ImagePath.usericon
                 }
-                style={styles.profile}
+                style={[styles.profile]}
               />
+
               <View style={styles.usernameView}>
                 <Text
                   style={[styles.captiontxt, {fontFamily: 'Raleway-Medium'}]}>
@@ -289,45 +295,41 @@ const Home = ({navigation}) => {
               {`Description : ${item.caption}`}
             </Text>
           )}
-          <TapGestureHandler
-            maxDelayMs={250}
-            numberOfTaps={2}
-            onActivated={() => {
-              dobleTab(index), likePost(item);
-            }}>
-            <Animated.View
-              style={{
-                flex: 1,
-                width: '100%',
-                height: 200,
-                alignItems: 'center',
-                justifyContent: 'center',
+          {item?.imageUrl ? (
+            <TapGestureHandler
+              maxDelayMs={250}
+              numberOfTaps={2}
+              onActivated={() => {
+                dobleTab(index), likePost(item);
               }}>
-              <ImageBackground
-                source={{uri: item.imageUrl}}
-                style={[
-                  styles.imagePost,
-                  {
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  },
-                ]}>
-                {animatedIndex === index && item.imageUrl !== '' && (
-                  <ImageComappoennt
-                    source={ImagePath.hearticon}
-                    style={[
-                      {
-                        width: 100,
-                        height: 100,
-                        tintColor: checkLike ? Colors.red : Colors.white,
-                      },
-                      animatedStle,
-                    ]}
-                  />
-                )}
-              </ImageBackground>
-            </Animated.View>
-          </TapGestureHandler>
+              <Animated.View style={styles.animatedViewStyle}>
+                <ImageBackground
+                  source={{uri: item?.imageUrl}}
+                  style={[
+                    styles.imagePost,
+                    {
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    },
+                  ]}>
+                  {animatedIndex === index && item?.imageUrl !== '' && (
+                    <ImageComappoennt
+                      source={ImagePath.hearticon}
+                      style={[
+                        {
+                          width: 100,
+                          height: 100,
+                          tintColor: checkLike ? Colors.red : Colors.white,
+                        },
+                        animatedStle,
+                      ]}
+                    />
+                  )}
+                </ImageBackground>
+              </Animated.View>
+            </TapGestureHandler>
+          ) : null}
+
           <View style={styles.bottomView}>
             <TouchableOpacity
               onPress={() => {
@@ -350,7 +352,11 @@ const Home = ({navigation}) => {
                 navigation.navigate(RoutesName.Comment, {id: item._id});
               }}
               style={styles.bottomLeft}>
-              <FastImage source={ImagePath.chaticon} style={styles.heart} />
+              <FastImage
+                tintColor={Colors.white}
+                source={ImagePath.chaticon}
+                style={styles.heart}
+              />
               <Text style={styles.captiontxt}>
                 {` ${item.comments.length ? item.comments.length : 0} Comments`}
               </Text>
@@ -360,7 +366,11 @@ const Home = ({navigation}) => {
                 handleShare(item._id);
               }}
               style={styles.bottomLeft}>
-              <FastImage source={ImagePath.shareicon} style={styles.heart} />
+              <FastImage
+                tintColor={Colors.white}
+                source={ImagePath.shareicon}
+                style={styles.heart}
+              />
               <Text style={styles.captiontxt}>{` Share`}</Text>
             </TouchableOpacity>
           </View>
@@ -454,6 +464,13 @@ const Home = ({navigation}) => {
 export default Home;
 
 const styles = StyleSheet.create({
+  animatedViewStyle: {
+    flex: 1,
+    width: '100%',
+    height: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   followtxt: {color: Colors.white},
   follwobtn: {
     backgroundColor: Colors.black5,

@@ -86,34 +86,47 @@ const Login = ({navigation, onClicks, onGoregister}) => {
     return isValidedpassword;
   };
   const login = () => {
-    setLoading(true);
-    console.log(BASE_URL + API_URLS.LOGIN_URL);
-    fetch(BASE_URL + API_URLS.LOGIN_URL, {
-      body: JSON.stringify({
-        email: email.toLowerCase(),
-        password: password,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json', // I added this line
-      },
-      method: 'POST',
-    })
-      .then(response => response.json())
-      .then(responseData => {
-        setLoading(false);
-
-        console.log(responseData);
-        if (responseData.status) {
-          dispatch(setAuthdata(responseData));
-          dispatch(setToken(responseData.token));
-          navigation.navigate(RoutesName.BottomTab);
-        }
+    try {
+      setLoading(true);
+      console.log(BASE_URL + API_URLS.LOGIN_URL);
+      fetch(BASE_URL + API_URLS.LOGIN_URL, {
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          password: password,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json', // I added this line
+        },
+        method: 'POST',
       })
-      .catch(error => {
-        setLoading(false);
-        console.log(error);
-      });
+        .then(response => response.json())
+        .then(responseData => {
+          console.log(responseData);
+          if (responseData.status) {
+            dispatch(setAuthdata(responseData));
+            dispatch(setToken(responseData.token));
+            navigation.navigate(RoutesName.BottomTab);
+          } else {
+            showMessage({
+              message: responseData?.message
+                ? responseData?.message
+                : 'Try again later. Something went wrong.',
+              type: 'danger',
+              backgroundColor: 'red',
+              icon: 'danger',
+              color: '#fff',
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => setLoading(false));
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
   };
   const handleOtpSumbit = event => {
     console.log(event);
@@ -336,6 +349,7 @@ const Login = ({navigation, onClicks, onGoregister}) => {
           </TouchableOpacity>
         </View>
       ) : null}
+      <Loader visible={loading} />
     </View>
   );
 };

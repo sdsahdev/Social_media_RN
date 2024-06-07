@@ -177,13 +177,21 @@ const UploadPost = ({navigation}) => {
       <TouchableOpacity
         onPress={() => requestCameraPermission()}
         style={styles.containBox}>
-        <FastImage source={ImagePath.cameraicon} style={styles.camera} />
+        <FastImage
+          tintColor={Colors.white}
+          source={ImagePath.cameraicon}
+          style={styles.camera}
+        />
         <Text style={styles.pickerTitel}>Open Camera</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => requestExternalWritePermission()}
         style={[styles.containBox]}>
-        <FastImage source={ImagePath.gallaryicon} style={styles.camera} />
+        <FastImage
+          tintColor={Colors.white}
+          source={ImagePath.gallaryicon}
+          style={styles.camera}
+        />
         <Text style={styles.pickerTitel}>Open Gallary</Text>
       </TouchableOpacity>
 

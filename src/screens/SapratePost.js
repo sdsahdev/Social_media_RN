@@ -280,48 +280,52 @@ const SapratePost = ({navigation, route}) => {
         )}
         {/* image cotainer */}
         <View style={{height: 200}}>
-          <TapGestureHandler
-            maxDelayMs={250}
-            numberOfTaps={2}
-            onActivated={() => {
-              console.log('click=====');
-              dobleTab(), likePost(item);
-            }}>
-            <Animated.View
-              style={{
-                width: wp(100),
-                height: 200,
-                alignItems: 'center',
+          {item?.imageUrl ? (
+            <TapGestureHandler
+              maxDelayMs={250}
+              numberOfTaps={2}
+              onActivated={() => {
+                console.log('click=====');
+                dobleTab(), likePost(item);
               }}>
-              {console.log(item?.imageUrl, '==imgcheck==02')}
+              <Animated.View
+                style={{
+                  width: wp(100),
+                  height: 200,
+                  alignItems: 'center',
+                }}>
+                {console.log(item?.imageUrl, '==imgcheck==02')}
 
-              <ImageBackground
-                source={
-                  item?.imageUrl ? {uri: item?.imageUrl} : ImagePath.gallaryicon
-                }
-                style={[
-                  styles.imagePost,
-                  {
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  },
-                ]}>
-                {item?.imageUrl !== '' && (
-                  <ImageComappoennt
-                    source={ImagePath?.hearticon}
-                    style={[
-                      {
-                        width: 100,
-                        height: 100,
-                        tintColor: checkLike ? Colors.red : Colors.white,
-                      },
-                      animatedStle,
-                    ]}
-                  />
-                )}
-              </ImageBackground>
-            </Animated.View>
-          </TapGestureHandler>
+                <ImageBackground
+                  source={
+                    item?.imageUrl
+                      ? {uri: item?.imageUrl}
+                      : ImagePath.gallaryicon
+                  }
+                  style={[
+                    styles.imagePost,
+                    {
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    },
+                  ]}>
+                  {item?.imageUrl !== '' && (
+                    <ImageComappoennt
+                      source={ImagePath?.hearticon}
+                      style={[
+                        {
+                          width: 100,
+                          height: 100,
+                          tintColor: checkLike ? Colors.red : Colors.white,
+                        },
+                        animatedStle,
+                      ]}
+                    />
+                  )}
+                </ImageBackground>
+              </Animated.View>
+            </TapGestureHandler>
+          ) : null}
         </View>
 
         {/* like cotaner */}

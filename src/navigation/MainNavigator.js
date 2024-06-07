@@ -16,7 +16,7 @@ import UploadPost from '../screens/UploadPost';
 import {ImagePath, RoutesName} from '../utils/Strings';
 import BottomTabScreen from './BottomTab';
 import {useSelector} from 'react-redux';
-import {SocketProvide} from '../socket/socket';
+
 import MessageScreen from '../screens/MessageScreen';
 import GallaryScreen from '../screens/GallaryScreen';
 import ListWithoutChat from '../screens/ListWithoutChat';
