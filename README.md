@@ -5,6 +5,11 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 # Flix-Post 📸✨
 
+You can Download with this link.
+
+https://play.google.com/store/apps/details?id=com.flix_post&pcampaignid=web_share
+
+
 Welcome to **Flix-Post**, a dynamic social media application built with React Native, Node.js, and MongoDB. Share your moments, connect with friends, and explore new connections. 🚀
 
 ![Flix-Post Logo](link-to-your-logo) <!-- Add link to your project logo -->
